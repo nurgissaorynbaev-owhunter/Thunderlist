@@ -16,23 +16,26 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class TasksListFragment extends Fragment implements TasksListContract.View {
-    private TasksRecyclerViewAdapter adapter;
-
     private Context context;
     private EditText etQuickTask;
     private TasksListPresenter presenter;
+    private TasksRecyclerViewAdapter adapter;
 
 
     public TasksListFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        context = inflater.getContext();
         presenter = new TasksListPresenter(this);
 
         final View view = inflater.inflate(R.layout.fragment_tasks_list, container, false);
@@ -40,27 +43,25 @@ public class TasksListFragment extends Fragment implements TasksListContract.Vie
         RecyclerView rvTask = view.findViewById(R.id.recycler_view_task);
         etQuickTask = view.findViewById(R.id.edit_text_quick_task);
 
+        adapter = new TasksRecyclerViewAdapter(presenter);
+
         handleQuickTaskEditText();
 
-        adapter = new TasksRecyclerViewAdapter(presenter, new TasksRecyclerViewAdapter.TasksClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                System.out.println("Item clicked.");
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-                System.out.println("Long Item clicked.");
-            }
-        });
-
         rvTask.setAdapter(adapter);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        rvTask.setLayoutManager(layoutManager);
-
+        rvTask.setLayoutManager(new LinearLayoutManager(context));
 
         return view;
+    }
+
+    @Override
+    public void notifyDataAddedToTasksList() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyDataRemovedFromTasksList(int position, int itemCount) {
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position, itemCount);
     }
 
     private void handleQuickTaskEditText() {
