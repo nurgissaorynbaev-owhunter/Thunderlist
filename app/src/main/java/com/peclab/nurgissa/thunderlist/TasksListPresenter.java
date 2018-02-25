@@ -24,17 +24,19 @@ public class TasksListPresenter implements TasksListContract.Presenter {
     @Override
     public void setQuickTask(String value) {
         tasks.add(new Task(value));
+        view.notifyDataAddedToTasksList();
     }
 
     public void checkStatusChanged(boolean value, int position) {
         if (value) {
             tasks.remove(position);
             adapterView.setChecked(false);
-            adapterView.notifyDataChanged();
+
+            view.notifyDataRemovedFromTasksList(position, tasks.size());
         }
     }
 
-    public int getItemCount() {
+    public int getTasksCount() {
         return tasks.size();
     }
 }
