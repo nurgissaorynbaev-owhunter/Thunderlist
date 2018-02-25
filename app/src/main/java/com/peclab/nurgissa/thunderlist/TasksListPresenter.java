@@ -7,7 +7,7 @@ import java.util.List;
 public class TasksListPresenter implements TasksListContract.Presenter {
     private TasksListContract.View view;
     private List<Task> tasks;
-    private TasksRecyclerViewAdapter adapter;
+    private TasksListContract.AdapterView adapterView;
 
 
     public TasksListPresenter(TasksListContract.View view) {
@@ -15,17 +15,26 @@ public class TasksListPresenter implements TasksListContract.Presenter {
         this.view = view;
     }
 
+    public void bindAdapterViewToValue(TasksListContract.AdapterView adapterView, int position) {
+        this.adapterView = adapterView;
+
+        adapterView.setTitle(tasks.get(position).getTitle());
+    }
+
     @Override
     public void setQuickTask(String value) {
         tasks.add(new Task(value));
-        adapter.notifyDataSetChanged();
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    public void checkStatusChanged(boolean value, int position) {
+        if (value) {
+            tasks.remove(position);
+            adapterView.setChecked(false);
+            adapterView.notifyDataChanged();
+        }
     }
 
-    public void setAdapter(TasksRecyclerViewAdapter adapter) {
-        this.adapter = adapter;
+    public int getItemCount() {
+        return tasks.size();
     }
 }
