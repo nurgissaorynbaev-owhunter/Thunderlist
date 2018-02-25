@@ -4,7 +4,8 @@ package com.peclab.nurgissa.thunderlist;
 public interface TasksListContract {
 
     interface View {
-
+        void notifyDataAddedToTasksList();
+        void notifyDataRemovedFromTasksList(int position, int itemCount);
     }
 
     interface Presenter {
@@ -13,7 +14,6 @@ public interface TasksListContract {
 
     interface AdapterView {
         void setTitle(String value);
-        void notifyDataChanged();
         void setChecked(boolean value);
     }
 }
