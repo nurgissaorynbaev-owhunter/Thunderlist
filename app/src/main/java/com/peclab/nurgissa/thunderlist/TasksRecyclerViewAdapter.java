@@ -50,11 +50,6 @@ public class TasksRecyclerViewAdapter extends RecyclerView.Adapter<TasksRecycler
         }
 
         @Override
-        public void notifyDataChanged() {
-            notifyDataSetChanged();
-        }
-
-        @Override
         public void setChecked(boolean value) {
             chbStatus.setChecked(value);
         }
@@ -75,7 +70,7 @@ public class TasksRecyclerViewAdapter extends RecyclerView.Adapter<TasksRecycler
 
     @Override
     public int getItemCount() {
-        return presenter.getItemCount();
+        return presenter.getTasksCount();
     }
 
 }
