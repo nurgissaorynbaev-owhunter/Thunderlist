@@ -11,7 +11,9 @@ public interface TasksListContract {
         void setQuickTask(String value);
     }
 
-    interface RecycleViewAdapterView {
+    interface AdapterView {
+        void setTitle(String value);
         void notifyDataChanged();
+        void setChecked(boolean value);
     }
 }
