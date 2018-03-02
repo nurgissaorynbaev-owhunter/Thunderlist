@@ -1,11 +1,12 @@
 package com.peclab.nurgissa.thunderlist;
 
 
-public interface TasksListContract {
+public interface TaskListContract {
 
     interface View {
         void notifyDataAddedToTasksList();
         void notifyDataRemovedFromTasksList(int position, int itemCount);
+        void deliverTaskTitle(String value);
     }
 
     interface Presenter {
