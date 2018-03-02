@@ -4,18 +4,18 @@ package com.peclab.nurgissa.thunderlist;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TasksListPresenter implements TasksListContract.Presenter {
-    private TasksListContract.View view;
+public class TaskListPresenter implements TaskListContract.Presenter {
+    private TaskListContract.View view;
     private List<Task> tasks;
-    private TasksListContract.AdapterView adapterView;
+    private TaskListContract.AdapterView adapterView;
 
 
-    public TasksListPresenter(TasksListContract.View view) {
+    public TaskListPresenter(TaskListContract.View view) {
         this.tasks = new ArrayList<>();
         this.view = view;
     }
 
-    public void bindAdapterViewToValue(TasksListContract.AdapterView adapterView, int position) {
+    public void bindAdapterViewToValue(TaskListContract.AdapterView adapterView, int position) {
         this.adapterView = adapterView;
 
         adapterView.setTitle(tasks.get(position).getTitle());
@@ -23,7 +23,10 @@ public class TasksListPresenter implements TasksListContract.Presenter {
 
     @Override
     public void setQuickTask(String value) {
-        tasks.add(new Task(value));
+        Task task = new Task();
+        task.setTitle(value);
+
+        tasks.add(task);
         view.notifyDataAddedToTasksList();
     }
 
@@ -38,5 +41,9 @@ public class TasksListPresenter implements TasksListContract.Presenter {
 
     public int getTasksCount() {
         return tasks.size();
+    }
+
+    public void onItemClick(int position) {
+        view.deliverTaskTitle(tasks.get(position).getTitle());
     }
 }
