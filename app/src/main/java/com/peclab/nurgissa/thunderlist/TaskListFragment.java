@@ -15,40 +15,45 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class TasksListFragment extends Fragment implements TasksListContract.View {
+public class TaskListFragment extends Fragment implements TaskListContract.View {
     private Context context;
     private EditText etQuickTask;
-    private TasksListPresenter presenter;
-    private TasksRecyclerViewAdapter adapter;
+    private TaskListPresenter presenter;
+    private TaskRecyclerViewAdapter adapter;
+    private Listener contextListener;
 
+    interface Listener {
+        void onItemClick(String value);
+    }
 
-    public TasksListFragment() {
+    public TaskListFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context;
+        this.contextListener = (Listener) context;
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        this.context = inflater.getContext();
 
-        presenter = new TasksListPresenter(this);
+        presenter = new TaskListPresenter(this);
 
-        final View view = inflater.inflate(R.layout.fragment_tasks_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
-        RecyclerView rvTask = view.findViewById(R.id.recycler_view_task);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_task_list);
         etQuickTask = view.findViewById(R.id.edit_text_quick_task);
 
-        adapter = new TasksRecyclerViewAdapter(presenter);
+        adapter = new TaskRecyclerViewAdapter(presenter);
 
         handleQuickTaskEditText();
 
-        rvTask.setAdapter(adapter);
-        rvTask.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         return view;
     }
@@ -82,5 +87,10 @@ public class TasksListFragment extends Fragment implements TasksListContract.Vie
                 return false;
             }
         });
+    }
+
+    @Override
+    public void deliverTaskTitle(String value) {
+        contextListener.onItemClick(value);
     }
 }
