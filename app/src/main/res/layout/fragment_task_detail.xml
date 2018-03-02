@@ -1,9 +1,7 @@
 <android.support.v7.widget.RecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recycler_view_task"
-    android:scrollbars="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"/>
-
-
+    tools:context="com.peclab.nurgissa.thunderlist.TaskDetailFragment">
+</android.support.v7.widget.RecyclerView>
