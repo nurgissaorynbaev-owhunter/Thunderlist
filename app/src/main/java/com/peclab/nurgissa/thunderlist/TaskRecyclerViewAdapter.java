@@ -9,14 +9,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-public class TasksRecyclerViewAdapter extends RecyclerView.Adapter<TasksRecyclerViewAdapter.ViewHolder> {
-    private TasksListPresenter presenter;
+public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder> {
+    private TaskListPresenter presenter;
 
-    public TasksRecyclerViewAdapter(TasksListPresenter presenter) {
+    public TaskRecyclerViewAdapter(TaskListPresenter presenter) {
         this.presenter = presenter;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements TasksListContract.AdapterView, View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements TaskListContract.AdapterView, View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
         private TextView tvTitle;
         private CheckBox chbStatus;
 
@@ -32,6 +32,7 @@ public class TasksRecyclerViewAdapter extends RecyclerView.Adapter<TasksRecycler
 
         @Override
         public void onClick(View v) {
+            presenter.onItemClick(getAdapterPosition());
         }
 
         @Override
@@ -58,7 +59,7 @@ public class TasksRecyclerViewAdapter extends RecyclerView.Adapter<TasksRecycler
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.card_view_task, parent, false);
+                R.layout.task_item_view, parent, false);
 
         return new ViewHolder(view);
     }
