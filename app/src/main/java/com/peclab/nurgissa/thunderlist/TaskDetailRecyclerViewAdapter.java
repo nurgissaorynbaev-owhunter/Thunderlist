@@ -23,6 +23,7 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     public interface Listener {
         void onNoteItemClick(View view);
         void onAddSubtaskItemClick(View view);
+        void onScheduleItemClick(View view);
     }
 
     public class BasicViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.BasicAdapterView, View.OnClickListener {
@@ -53,6 +54,10 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
             } else if (viewType == DetailTaskItem.ADD_SUBTASK) {
                 fragment.onAddSubtaskItemClick(v);
+
+            } else if (viewType == DetailTaskItem.SCHEDULE) {
+                fragment.onScheduleItemClick(v);
+
             }
         }
     }
