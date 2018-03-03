@@ -5,25 +5,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDetailPresenter {
-    private List<DetailTask> detailTasks;
+    private List<DetailTaskItem> detailTaskItems;
+    private TaskDetailContract.View view;
 
-    public TaskDetailPresenter() {
-        detailTasks = new ArrayList<>();
+    public TaskDetailPresenter(TaskDetailContract.View view) {
+        this.view = view;
+        detailTaskItems = new ArrayList<>();
+    }
+
+    public void bindBasicValueToValue(TaskDetailRecyclerViewAdapter.BasicValueViewHolder adapterView, int position) {
+        DetailTaskItem dt = detailTaskItems.get(position);
+        adapterView.feelView(dt.getImage(), dt.getText());
     }
 
     public void bindBasicViewHolderToData(TaskDetailContract.BasicAdapterView adapterView, int position) {
-        DetailTask dt = detailTasks.get(position);
-        adapterView.feelView(dt.getImage(), dt.getHint());
+        DetailTaskItem dt = detailTaskItems.get(position);
+        adapterView.feelView(dt.getImage(), dt.getText());
     }
 
     public void bindSubtaskViewHolderToData(TaskDetailContract.SubtaskAdapterView adapterView, int position) {
+        DetailTaskItem dt = detailTaskItems.get(position);
+        adapterView.feelView(dt.getText());
     }
 
-    public void addDetailTask(int image, String value) {
-        detailTasks.add(new DetailTask(image, value));
+    public void addDetailTaskItem(int image, String value, int viewType) {
+        detailTaskItems.add(new DetailTaskItem(image, value, viewType));
     }
 
-    public int getDetailTaskCount() {
-        return detailTasks.size();
+    public int getDetailTaskItemCount() {
+        return detailTaskItems.size();
+    }
+
+    public int getViewType(int position) {
+        return detailTaskItems.get(position).getViewType();
+    }
+
+    public void addSubtask(String value) {
+        DetailTaskItem detailItem = new DetailTaskItem();
+        detailItem.setText(value);
+        detailItem.setViewType(DetailTaskItem.SUBTASK);
+
+        detailTaskItems.add(DetailTaskItem.SUBTASK, detailItem);
+
+        view.notifySubtaskAddedToDetailTask();
     }
 }
