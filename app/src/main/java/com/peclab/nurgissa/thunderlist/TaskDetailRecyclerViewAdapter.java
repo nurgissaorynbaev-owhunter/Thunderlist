@@ -1,15 +1,15 @@
 package com.peclab.nurgissa.thunderlist;
 
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.List;
 
 public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private TaskDetailPresenter presenter;
@@ -22,6 +22,7 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     public interface Listener {
         void onNoteItemClick(View view);
+        void onAddSubtaskItemClick(View view);
     }
 
     public class BasicViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.BasicAdapterView, View.OnClickListener {
@@ -45,10 +46,13 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
         @Override
         public void onClick(View v) {
-            switch (getAdapterPosition()) {
-                case 2:
-                    fragment.onNoteItemClick(v);
-                    break;
+            int viewType = presenter.getViewType(getAdapterPosition());
+
+            if (viewType == DetailTaskItem.NOTE) {
+                fragment.onNoteItemClick(v);
+
+            } else if (viewType == DetailTaskItem.ADD_SUBTASK) {
+                fragment.onAddSubtaskItemClick(v);
             }
         }
     }
@@ -70,38 +74,76 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         }
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
+    public class BasicValueViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.BasicAdapterValueView {
+        private ImageView image;
+        private EditText editText;
+
+        public BasicValueViewHolder(View itemView) {
+            super(itemView);
+
+            this.image = itemView.findViewById(R.id.basic_show_task_value_imageView);
+            this.editText = itemView.findViewById(R.id.basic_show_task_value_editText);
+
+            setColor();
+        }
+
+        private void setColor() {
+            image.setColorFilter(ContextCompat.getColor(fragment.getContext(), R.color.darkGray));
+            editText.setTextColor(ContextCompat.getColor(fragment.getContext(), R.color.darkGray));
+        }
+
+        @Override
+        public void feelView(int image, String value) {
+            this.image.setImageResource(image);
+            this.editText.setText(value);
+        }
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return presenter.getViewType(position);
+    }
+
+    //TODO Move business login from view.
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        RecyclerView.ViewHolder viewHolder = null;
         View view;
-        RecyclerView.ViewHolder viewHolder;
 
-        if (viewType <= 3) {
-            view = inflater.inflate(R.layout.basic_task_detail, parent, false);
+        if (viewType == DetailTaskItem.VALUE) {
+            view = inflater.inflate(R.layout.basic_value_item, parent, false);
+            viewHolder = new BasicValueViewHolder(view);
+
+        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
+            view = inflater.inflate(R.layout.basic_detail_item, parent, false);
             viewHolder = new BasicViewHolder(view);
-        } else {
-            view = inflater.inflate(R.layout.sub_task_detail, parent, false);
+
+        } else if (viewType == DetailTaskItem.SUBTASK) {
+            view = inflater.inflate(R.layout.subtask_detail_item, parent, false);
             viewHolder = new SubtaskViewHolder(view);
         }
         return viewHolder;
     }
 
+    //TODO Move business login from view.
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder.getItemViewType() <= 3) {
+        int viewType = holder.getItemViewType();
+
+        if (viewType == DetailTaskItem.VALUE) {
+            presenter.bindBasicValueToValue((BasicValueViewHolder) holder, position);
+
+        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
             presenter.bindBasicViewHolderToData((BasicViewHolder) holder, position);
-        } else {
+
+        } else if (viewType == DetailTaskItem.SUBTASK) {
             presenter.bindSubtaskViewHolderToData((SubtaskViewHolder) holder, position);
         }
     }
 
     @Override
     public int getItemCount() {
-        return presenter.getDetailTaskCount();
+        return presenter.getDetailTaskItemCount();
     }
 }
