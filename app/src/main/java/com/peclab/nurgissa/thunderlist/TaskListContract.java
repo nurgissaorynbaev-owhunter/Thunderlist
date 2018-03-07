@@ -4,13 +4,13 @@ package com.peclab.nurgissa.thunderlist;
 public interface TaskListContract {
 
     interface View {
-        void notifyDataAddedToTasksList();
-        void notifyDataRemovedFromTasksList(int position, int itemCount);
+        void notifyDataAddedToTaskList(int position);
+        void notifyDataRemovedFromTaskList(int position);
         void deliverTaskTitle(String value);
     }
 
     interface Presenter {
-        void setQuickTask(String value);
+        void addQuickTask(String value);
     }
 
     interface AdapterView {
