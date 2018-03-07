@@ -1,7 +1,6 @@
 package com.peclab.nurgissa.thunderlist;
 
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +10,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements TaskDetailContract.AdapterView {
     private TaskDetailPresenter presenter;
     private TaskDetailFragment fragment;
+    private RecyclerView.ViewHolder viewHolder;
+    private LayoutInflater inflater;
+    private ViewGroup parent;
+    private RecyclerView.ViewHolder bindViewHolder;
+    private int bindPosition;
 
     public TaskDetailRecyclerViewAdapter(TaskDetailFragment fragment, TaskDetailPresenter presenter) {
         this.presenter = presenter;
@@ -22,27 +27,29 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     public interface Listener {
         void onNoteItemClick(View view);
+
         void onAddSubtaskItemClick(View view);
+
         void onScheduleItemClick(View view);
     }
 
     public class BasicViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.BasicAdapterView, View.OnClickListener {
-        private ImageView image;
-        private TextView text;
+        private ImageView imageView;
+        private TextView textView;
 
         public BasicViewHolder(View itemView) {
             super(itemView);
 
-            image = itemView.findViewById(R.id.basic_task_imageView);
-            text = itemView.findViewById(R.id.basic_task_textView);
+            this.imageView = itemView.findViewById(R.id.basic_detail_item_imageView);
+            this.textView = itemView.findViewById(R.id.basic_detail_item_textView);
 
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void feelView(int image, String text) {
-            this.image.setImageResource(image);
-            this.text.setText(text);
+            this.imageView.setImageResource(image);
+            this.textView.setText(text);
         }
 
         @Override
@@ -64,42 +71,35 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     public class SubtaskViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.SubtaskAdapterView {
         private CheckBox checkBox;
-        private TextView text;
+        private TextView textView;
 
         public SubtaskViewHolder(View itemView) {
             super(itemView);
 
-            checkBox = itemView.findViewById(R.id.sub_task_checkBox);
-            text = itemView.findViewById(R.id.sub_task_textView);
+            this.checkBox = itemView.findViewById(R.id.subtask_detail_item_checkBox);
+            this.textView = itemView.findViewById(R.id.subtask_detail_item_textView);
         }
 
         @Override
         public void feelView(String value) {
-            text.setText(value);
+            textView.setText(value);
         }
     }
 
-    public class BasicValueViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.BasicAdapterValueView {
-        private ImageView image;
+    public class TaskTitleViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.TaskTitleAdapterView {
+        private ImageView imageView;
         private EditText editText;
 
-        public BasicValueViewHolder(View itemView) {
+        public TaskTitleViewHolder(View itemView) {
             super(itemView);
 
-            this.image = itemView.findViewById(R.id.basic_show_task_value_imageView);
-            this.editText = itemView.findViewById(R.id.basic_show_task_value_editText);
-
-            setColor();
-        }
-
-        private void setColor() {
-            image.setColorFilter(ContextCompat.getColor(fragment.getContext(), R.color.darkGray));
-            editText.setTextColor(ContextCompat.getColor(fragment.getContext(), R.color.darkGray));
+            this.imageView = itemView.findViewById(R.id.task_title_item_imageView);
+            this.editText = itemView.findViewById(R.id.task_title_item_editText);
         }
 
         @Override
         public void feelView(int image, String value) {
-            this.image.setImageResource(image);
+            this.imageView.setImageResource(image);
             this.editText.setText(value);
         }
     }
@@ -109,42 +109,56 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         return presenter.getViewType(position);
     }
 
-    //TODO Move business login from view.
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        RecyclerView.ViewHolder viewHolder = null;
-        View view;
+        this.inflater = LayoutInflater.from(parent.getContext());
+        this.parent = parent;
 
-        if (viewType == DetailTaskItem.VALUE) {
-            view = inflater.inflate(R.layout.basic_value_item, parent, false);
-            viewHolder = new BasicValueViewHolder(view);
+        presenter.chooseOnCreateViewHolderByViewType(this, viewType);
 
-        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
-            view = inflater.inflate(R.layout.basic_detail_item, parent, false);
-            viewHolder = new BasicViewHolder(view);
-
-        } else if (viewType == DetailTaskItem.SUBTASK) {
-            view = inflater.inflate(R.layout.subtask_detail_item, parent, false);
-            viewHolder = new SubtaskViewHolder(view);
-        }
         return viewHolder;
     }
 
-    //TODO Move business login from view.
+    @Override
+    public void createTaskTitleViewHolder() {
+        View view = inflater.inflate(R.layout.task_title_item, parent, false);
+        viewHolder = new TaskTitleViewHolder(view);
+    }
+
+    @Override
+    public void createSubtastViewHolder() {
+        View view = inflater.inflate(R.layout.subtask_detail_item, parent, false);
+        viewHolder = new SubtaskViewHolder(view);
+    }
+
+    @Override
+    public void createBasicViewHolder() {
+        View view = inflater.inflate(R.layout.basic_detail_item, parent, false);
+        viewHolder = new BasicViewHolder(view);
+    }
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        this.bindViewHolder = holder;
+        this.bindPosition = position;
+
         int viewType = holder.getItemViewType();
+        presenter.chooseOnBindViewHolderByViewType(this, viewType);
+    }
 
-        if (viewType == DetailTaskItem.VALUE) {
-            presenter.bindBasicValueToValue((BasicValueViewHolder) holder, position);
+    @Override
+    public void bindTaskTitleViewHolder() {
+        presenter.bindTaskTitleViewHolderToValue((TaskTitleViewHolder) bindViewHolder, bindPosition);
+    }
 
-        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
-            presenter.bindBasicViewHolderToData((BasicViewHolder) holder, position);
+    @Override
+    public void bindBasicViewHolder() {
+        presenter.bindBasicViewHolderToValue((BasicViewHolder) bindViewHolder, bindPosition);
+    }
 
-        } else if (viewType == DetailTaskItem.SUBTASK) {
-            presenter.bindSubtaskViewHolderToData((SubtaskViewHolder) holder, position);
-        }
+    @Override
+    public void bindSubtaskViewHolder() {
+        presenter.bindSubtaskViewHolderToValue((SubtaskViewHolder) bindViewHolder, bindPosition);
     }
 
     @Override
