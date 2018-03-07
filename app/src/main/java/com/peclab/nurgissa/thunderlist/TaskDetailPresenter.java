@@ -13,17 +13,17 @@ public class TaskDetailPresenter {
         detailTaskItems = new ArrayList<>();
     }
 
-    public void bindBasicValueToValue(TaskDetailRecyclerViewAdapter.BasicValueViewHolder adapterView, int position) {
+    public void bindTaskTitleViewHolderToValue(TaskDetailRecyclerViewAdapter.TaskTitleViewHolder adapterView, int position) {
         DetailTaskItem dt = detailTaskItems.get(position);
         adapterView.feelView(dt.getImage(), dt.getText());
     }
 
-    public void bindBasicViewHolderToData(TaskDetailContract.BasicAdapterView adapterView, int position) {
+    public void bindBasicViewHolderToValue(TaskDetailContract.BasicAdapterView adapterView, int position) {
         DetailTaskItem dt = detailTaskItems.get(position);
         adapterView.feelView(dt.getImage(), dt.getText());
     }
 
-    public void bindSubtaskViewHolderToData(TaskDetailContract.SubtaskAdapterView adapterView, int position) {
+    public void bindSubtaskViewHolderToValue(TaskDetailContract.SubtaskAdapterView adapterView, int position) {
         DetailTaskItem dt = detailTaskItems.get(position);
         adapterView.feelView(dt.getText());
     }
@@ -48,5 +48,31 @@ public class TaskDetailPresenter {
         detailTaskItems.add(DetailTaskItem.SUBTASK, detailItem);
 
         view.notifySubtaskAddedToDetailTask();
+    }
+
+    public void chooseOnCreateViewHolderByViewType(TaskDetailContract.AdapterView adapterView, int viewType) {
+
+        if (viewType == DetailTaskItem.VALUE) {
+            adapterView.createTaskTitleViewHolder();
+
+        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
+            adapterView.createBasicViewHolder();
+
+        } else if (viewType == DetailTaskItem.SUBTASK) {
+            adapterView.createSubtastViewHolder();
+        }
+    }
+
+    public void chooseOnBindViewHolderByViewType(TaskDetailContract.AdapterView adapterView, int viewType) {
+
+        if (viewType == DetailTaskItem.VALUE) {
+            adapterView.bindTaskTitleViewHolder();
+
+        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
+            adapterView.bindBasicViewHolder();
+
+        } else if (viewType == DetailTaskItem.SUBTASK) {
+            adapterView.bindSubtaskViewHolder();
+        }
     }
 }
