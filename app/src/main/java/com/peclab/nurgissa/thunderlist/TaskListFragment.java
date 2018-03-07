@@ -16,10 +16,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class TaskListFragment extends Fragment implements TaskListContract.View {
-    private Context context;
-    private EditText etQuickTask;
+    private EditText edtQuickTask;
     private TaskListPresenter presenter;
-    private TaskRecyclerViewAdapter adapter;
+    private TaskListRecyclerViewAdapter adapter;
     private Listener contextListener;
 
     interface Listener {
@@ -39,48 +38,46 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.context = inflater.getContext();
 
         presenter = new TaskListPresenter(this);
 
         final View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_task_list);
-        etQuickTask = view.findViewById(R.id.edit_text_quick_task);
+        edtQuickTask = view.findViewById(R.id.edit_text_quick_task);
 
-        adapter = new TaskRecyclerViewAdapter(presenter);
+        adapter = new TaskListRecyclerViewAdapter(presenter);
 
         handleQuickTaskEditText();
 
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return view;
     }
 
     @Override
-    public void notifyDataAddedToTasksList() {
-        adapter.notifyDataSetChanged();
+    public void notifyDataAddedToTaskList(int position) {
+        adapter.notifyItemInserted(position);
     }
 
     @Override
-    public void notifyDataRemovedFromTasksList(int position, int itemCount) {
+    public void notifyDataRemovedFromTaskList(int position) {
         adapter.notifyItemRemoved(position);
-        adapter.notifyItemRangeChanged(position, itemCount);
     }
 
     private void handleQuickTaskEditText() {
-        etQuickTask.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        edtQuickTask.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                    presenter.setQuickTask(v.getText().toString());
+                    presenter.addQuickTask(v.getText().toString());
 
-                    InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-                    etQuickTask.getText().clear();
+                    edtQuickTask.getText().clear();
 
                     return true;
                 }
