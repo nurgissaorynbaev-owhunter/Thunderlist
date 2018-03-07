@@ -9,21 +9,21 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder> {
+public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRecyclerViewAdapter.ViewHolder> {
     private TaskListPresenter presenter;
 
-    public TaskRecyclerViewAdapter(TaskListPresenter presenter) {
+    public TaskListRecyclerViewAdapter(TaskListPresenter presenter) {
         this.presenter = presenter;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements TaskListContract.AdapterView, View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
-        private TextView tvTitle;
+        private TextView tevTitle;
         private CheckBox chbStatus;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            this.tvTitle = itemView.findViewById(R.id.text_view_title);
-            this.chbStatus = itemView.findViewById(R.id.checkbox_status);
+            this.tevTitle = itemView.findViewById(R.id.text_view_title_task_list);
+            this.chbStatus = itemView.findViewById(R.id.checkbox_status_task_list);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -32,7 +32,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
         @Override
         public void onClick(View v) {
-            presenter.onItemClick(getAdapterPosition());
+            presenter.taskClicked(getAdapterPosition());
         }
 
         @Override
@@ -47,7 +47,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
         @Override
         public void setTitle(String value) {
-            tvTitle.setText(value);
+            tevTitle.setText(value);
         }
 
         @Override
