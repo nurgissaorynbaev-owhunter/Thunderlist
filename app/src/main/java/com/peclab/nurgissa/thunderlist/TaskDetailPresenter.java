@@ -49,30 +49,4 @@ public class TaskDetailPresenter {
 
         view.notifySubtaskAddedToDetailTask();
     }
-
-    public void chooseOnCreateViewHolderByViewType(TaskDetailContract.AdapterView adapterView, int viewType) {
-
-        if (viewType == DetailTaskItem.VALUE) {
-            adapterView.createTaskTitleViewHolder();
-
-        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
-            adapterView.createBasicViewHolder();
-
-        } else if (viewType == DetailTaskItem.SUBTASK) {
-            adapterView.createSubtastViewHolder();
-        }
-    }
-
-    public void chooseOnBindViewHolderByViewType(TaskDetailContract.AdapterView adapterView, int viewType) {
-
-        if (viewType == DetailTaskItem.VALUE) {
-            adapterView.bindTaskTitleViewHolder();
-
-        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
-            adapterView.bindBasicViewHolder();
-
-        } else if (viewType == DetailTaskItem.SUBTASK) {
-            adapterView.bindSubtaskViewHolder();
-        }
-    }
 }
