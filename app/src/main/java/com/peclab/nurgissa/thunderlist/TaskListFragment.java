@@ -3,7 +3,9 @@ package com.peclab.nurgissa.thunderlist;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -20,6 +22,7 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
     private TaskListPresenter presenter;
     private TaskListRecyclerViewAdapter adapter;
     private Listener contextListener;
+    private FloatingActionButton fab;
 
     interface Listener {
         void onItemClick(String value);
@@ -45,10 +48,12 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_task_list);
         edtQuickTask = view.findViewById(R.id.edit_text_quick_task);
+        fab = view.findViewById(R.id.fab_add_task);
 
         adapter = new TaskListRecyclerViewAdapter(presenter);
 
         handleQuickTaskEditText();
+        handleOnClickAddTask();
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -82,6 +87,21 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
                     return true;
                 }
                 return false;
+            }
+        });
+    }
+
+    private void handleOnClickAddTask() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TaskDetailFragment detailFragment = new TaskDetailFragment();
+
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_fragment_container, detailFragment);
+                transaction.addToBackStack(null);
+
+                transaction.commit();
             }
         });
     }
