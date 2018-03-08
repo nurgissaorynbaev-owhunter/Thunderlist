@@ -18,14 +18,4 @@ public interface TaskDetailContract {
     interface TaskTitleAdapterView {
         void feelView(int image, String value);
     }
-
-    interface AdapterView {
-        void createTaskTitleViewHolder();
-        void createSubtastViewHolder();
-        void createBasicViewHolder();
-
-        void bindTaskTitleViewHolder();
-        void bindBasicViewHolder();
-        void bindSubtaskViewHolder();
-    }
 }
