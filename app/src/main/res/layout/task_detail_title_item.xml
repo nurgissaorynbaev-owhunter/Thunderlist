@@ -7,30 +7,36 @@
     tools:layout_editor_absoluteY="81dp">
 
     <ImageView
-        android:id="@+id/basic_task_imageView"
+        android:id="@+id/task_title_item_imageView"
         android:layout_width="34dp"
         android:layout_height="28dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
+        android:tint="@color/lightGray"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/basic_task_textView"
+        app:layout_constraintEnd_toStartOf="@+id/task_title_item_editText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/ic_launcher_round" />
 
-    <TextView
-        android:id="@+id/basic_task_textView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="15dp"
-        android:gravity="center_vertical"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/lightGray"
+    <EditText
+        android:id="@+id/task_title_item_editText"
+        android:layout_width="313dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/transparent"
+        android:textColor="@color/darkGray"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/basic_task_imageView"
-        app:layout_constraintTop_toTopOf="@+id/basic_task_imageView" />
+        app:layout_constraintStart_toEndOf="@+id/task_title_item_imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

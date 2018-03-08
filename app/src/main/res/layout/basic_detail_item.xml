@@ -7,34 +7,32 @@
     tools:layout_editor_absoluteY="81dp">
 
     <ImageView
-        android:id="@+id/basic_show_task_value_imageView"
+        android:id="@+id/basic_detail_item_imageView"
         android:layout_width="34dp"
         android:layout_height="28dp"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
+        android:tint="@color/lightGray"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/basic_show_task_value_editText"
+        app:layout_constraintEnd_toStartOf="@+id/basic_detail_item_textView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/ic_launcher_round" />
 
-    <EditText
-        android:id="@+id/basic_show_task_value_editText"
-        android:layout_width="313dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+    <TextView
+        android:id="@+id/basic_detail_item_textView"
+        android:layout_width="311dp"
+        android:layout_height="28dp"
+        android:layout_marginBottom="15dp"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:background="@android:color/transparent"
-        android:ems="10"
-        android:inputType="text"
-        android:textSize="15sp"
+        android:layout_marginTop="15dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/lightGray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/basic_show_task_value_imageView"
+        app:layout_constraintStart_toEndOf="@+id/basic_detail_item_imageView"
         app:layout_constraintTop_toTopOf="parent" />
-
 </android.support.constraint.ConstraintLayout>
