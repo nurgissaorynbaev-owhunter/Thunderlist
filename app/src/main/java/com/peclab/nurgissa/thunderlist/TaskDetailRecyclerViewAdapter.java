@@ -1,6 +1,7 @@
 package com.peclab.nurgissa.thunderlist;
 
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements TaskDetailContract.AdapterView {
+public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private TaskDetailPresenter presenter;
     private TaskDetailFragment fragment;
-    private RecyclerView.ViewHolder viewHolder;
-    private LayoutInflater inflater;
-    private ViewGroup parent;
-    private RecyclerView.ViewHolder bindViewHolder;
-    private int bindPosition;
 
     public TaskDetailRecyclerViewAdapter(TaskDetailFragment fragment, TaskDetailPresenter presenter) {
         this.presenter = presenter;
@@ -99,8 +95,10 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
         @Override
         public void feelView(int image, String value) {
-            this.imageView.setImageResource(image);
-            this.editText.setText(value);
+            imageView.setImageResource(image);
+            editText.setText(value);
+
+            imageView.setColorFilter(ContextCompat.getColor(fragment.getContext(), R.color.darkGray));
         }
     }
 
@@ -109,56 +107,43 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         return presenter.getViewType(position);
     }
 
+    //TODO move business logic from view.
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        this.inflater = LayoutInflater.from(parent.getContext());
-        this.parent = parent;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        RecyclerView.ViewHolder viewHolder = null;
+        View view;
 
-        presenter.chooseOnCreateViewHolderByViewType(this, viewType);
+        if (viewType == DetailTaskItem.VALUE) {
+            view = inflater.inflate(R.layout.task_detail_title_item, parent, false);
+            viewHolder = new TaskTitleViewHolder(view);
+
+        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
+            view = inflater.inflate(R.layout.basic_detail_item, parent, false);
+            viewHolder = new BasicViewHolder(view);
+
+        } else if (viewType == DetailTaskItem.SUBTASK) {
+            view = inflater.inflate(R.layout.subtask_detail_item, parent, false);
+            viewHolder = new SubtaskViewHolder(view);
+        }
 
         return viewHolder;
     }
 
-    @Override
-    public void createTaskTitleViewHolder() {
-        View view = inflater.inflate(R.layout.task_title_item, parent, false);
-        viewHolder = new TaskTitleViewHolder(view);
-    }
-
-    @Override
-    public void createSubtastViewHolder() {
-        View view = inflater.inflate(R.layout.subtask_detail_item, parent, false);
-        viewHolder = new SubtaskViewHolder(view);
-    }
-
-    @Override
-    public void createBasicViewHolder() {
-        View view = inflater.inflate(R.layout.basic_detail_item, parent, false);
-        viewHolder = new BasicViewHolder(view);
-    }
-
+    //TODO move business logic from view.
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        this.bindViewHolder = holder;
-        this.bindPosition = position;
-
         int viewType = holder.getItemViewType();
-        presenter.chooseOnBindViewHolderByViewType(this, viewType);
-    }
 
-    @Override
-    public void bindTaskTitleViewHolder() {
-        presenter.bindTaskTitleViewHolderToValue((TaskTitleViewHolder) bindViewHolder, bindPosition);
-    }
+        if (viewType == DetailTaskItem.VALUE) {
+            presenter.bindTaskTitleViewHolderToValue((TaskTitleViewHolder) holder, position);
 
-    @Override
-    public void bindBasicViewHolder() {
-        presenter.bindBasicViewHolderToValue((BasicViewHolder) bindViewHolder, bindPosition);
-    }
+        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
+            presenter.bindBasicViewHolderToValue((BasicViewHolder) holder, position);
 
-    @Override
-    public void bindSubtaskViewHolder() {
-        presenter.bindSubtaskViewHolderToValue((SubtaskViewHolder) bindViewHolder, bindPosition);
+        } else if (viewType == DetailTaskItem.SUBTASK) {
+            presenter.bindSubtaskViewHolderToValue((SubtaskViewHolder) holder, position);
+        }
     }
 
     @Override
