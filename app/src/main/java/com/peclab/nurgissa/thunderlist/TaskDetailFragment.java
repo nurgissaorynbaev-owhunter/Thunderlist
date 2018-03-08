@@ -7,12 +7,18 @@ import android.content.DialogInterface;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -32,14 +38,21 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String value = getArguments().getString(EXTRA_VALUE);
+        View view = inflater.inflate(R.layout.fragment_task_detail, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_task_detail, container, false);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(inflater.getContext());
+        Toolbar toolbar = view.findViewById(R.id.toolbar_detail);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        setHasOptionsMenu(true);
+        activity.setSupportActionBar(toolbar);
+
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_task_detail);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         presenter = new TaskDetailPresenter(this);
 
-        initializeRecyclerView(value);
+        initializeRecyclerView();
 
         adapter = new TaskDetailRecyclerViewAdapter(this, presenter);
 
@@ -50,21 +63,58 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
 
         recyclerView.setAdapter(adapter);
 
-        return recyclerView;
+        return view;
     }
 
-    private void initializeRecyclerView(String value) {
-        presenter.addDetailTaskItem(R.drawable.task_value, value, DetailTaskItem.VALUE);
-        presenter.addDetailTaskItem(R.drawable.task_shedule, getString(R.string.reminder_hint), DetailTaskItem.SCHEDULE);
-        presenter.addDetailTaskItem(R.drawable.task_note, getString(R.string.note_hint), DetailTaskItem.NOTE);
-        presenter.addDetailTaskItem(R.drawable.add_subtask, getString(R.string.sub_task_hint), DetailTaskItem.ADD_SUBTASK);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_detail, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                return true;
+
+            case R.id.menu_item_accept_action:
+                handleAcceptMenuItemClick();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void handleAcceptMenuItemClick() {
+        TaskListFragment listFragment = new TaskListFragment();
+
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment_container, listFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
+
+    private void initializeRecyclerView() {
+        String value = "";
+        if (getArguments() != null) {
+            value = getArguments().getString(EXTRA_VALUE);
+        }
+
+        presenter.addDetailTaskItem(R.drawable.ic_subject_white_24dp, value, DetailTaskItem.VALUE);
+        presenter.addDetailTaskItem(R.drawable.ic_event_white_24dp, getString(R.string.reminder_hint), DetailTaskItem.SCHEDULE);
+        presenter.addDetailTaskItem(R.drawable.ic_mode_edit_white_24dp, getString(R.string.note_hint), DetailTaskItem.NOTE);
+        presenter.addDetailTaskItem(R.drawable.ic_add_white_24dp, getString(R.string.sub_task_hint), DetailTaskItem.ADD_SUBTASK);
     }
 
     @Override
     public void onNoteItemClick(View view) {
         EditTextFragment fragment = new EditTextFragment();
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment, null)
+                .replace(R.id.main_fragment_container, fragment, null)
                 .addToBackStack(null)
                 .commit();
     }
@@ -98,7 +148,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         });
 
         builder.show();
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     @Override
@@ -112,7 +162,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                System.out.println(dayOfMonth + " : " + month + " : " + year);
+                String date = dayOfMonth + "." + month + "." + year;
                 setTimePicker();
             }
         }, year, month, day);
@@ -129,7 +179,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                System.out.println(hour + " : " + minute);
+                String time = hourOfDay + ":" + minute;
             }
         }, hour, minute, false);
 
