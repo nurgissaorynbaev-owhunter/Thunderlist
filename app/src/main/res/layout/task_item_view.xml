@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_item"
+    android:id="@+id/card_item_task_list"
     android:layout_marginStart="5dp"
     android:layout_marginEnd="5dp"
     android:layout_marginTop="2dp"
@@ -17,13 +17,13 @@
         android:layout_height="match_parent">
 
         <CheckBox
+            android:id="@+id/checkbox_status_task_list"
             android:layout_gravity="center_vertical"
-            android:id="@+id/checkbox_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/text_view_title"
+            android:id="@+id/text_view_title_task_list"
             android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
