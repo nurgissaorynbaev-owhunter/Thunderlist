@@ -38,7 +38,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_task_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_detail_task, container, false);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar_detail);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
