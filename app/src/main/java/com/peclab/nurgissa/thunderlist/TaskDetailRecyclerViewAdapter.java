@@ -43,22 +43,26 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         }
 
         @Override
-        public void feelView(int image, String text) {
-            this.imageView.setImageResource(image);
-            this.textView.setText(text);
+        public void setImage(int image) {
+            imageView.setImageResource(image);
+        }
+
+        @Override
+        public void setText(String text) {
+            textView.setText(text);
         }
 
         @Override
         public void onClick(View v) {
             int viewType = presenter.getViewType(getAdapterPosition());
 
-            if (viewType == DetailTaskItem.NOTE) {
+            if (viewType == TaskDetail.NOTE) {
                 fragment.onNoteItemClick(v);
 
-            } else if (viewType == DetailTaskItem.ADD_SUBTASK) {
+            } else if (viewType == TaskDetail.ADD_SUBTASK) {
                 fragment.onAddSubtaskItemClick(v);
 
-            } else if (viewType == DetailTaskItem.SCHEDULE) {
+            } else if (viewType == TaskDetail.SCHEDULE) {
                 fragment.onScheduleItemClick(v);
 
             }
@@ -77,8 +81,8 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         }
 
         @Override
-        public void feelView(String value) {
-            textView.setText(value);
+        public void setText(String text) {
+            textView.setText(text);
         }
     }
 
@@ -94,11 +98,23 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         }
 
         @Override
-        public void feelView(int image, String value) {
+        public void setImage(int image) {
             imageView.setImageResource(image);
-            editText.setText(value);
+            imageView.setColorFilter(ContextCompat.getColor(fragment.getContext(), R.color.dark_gray));
 
-            imageView.setColorFilter(ContextCompat.getColor(fragment.getContext(), R.color.darkGray));
+        }
+
+        @Override
+        public void setText(String text) {
+            editText.setText(text);
+        }
+
+        @Override
+        public void setTextHint(String text) {
+            editText.setHint(text);
+            editText.setHintTextColor(ContextCompat.getColor(fragment.getContext(), R.color.light_gray));
+
+            imageView.setColorFilter(ContextCompat.getColor(fragment.getContext(), R.color.light_gray));
         }
     }
 
@@ -114,16 +130,16 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         RecyclerView.ViewHolder viewHolder = null;
         View view;
 
-        if (viewType == DetailTaskItem.VALUE) {
-            view = inflater.inflate(R.layout.task_detail_title_item, parent, false);
+        if (viewType == TaskDetail.EDIT_VALUE) {
+            view = inflater.inflate(R.layout.item_detail_task_title, parent, false);
             viewHolder = new TaskTitleViewHolder(view);
 
-        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
-            view = inflater.inflate(R.layout.basic_detail_item, parent, false);
+        } else if (viewType == TaskDetail.ADD_SUBTASK || viewType == TaskDetail.NOTE || viewType == TaskDetail.SCHEDULE) {
+            view = inflater.inflate(R.layout.item_detail_basic, parent, false);
             viewHolder = new BasicViewHolder(view);
 
-        } else if (viewType == DetailTaskItem.SUBTASK) {
-            view = inflater.inflate(R.layout.subtask_detail_item, parent, false);
+        } else if (viewType == TaskDetail.SUBTASK) {
+            view = inflater.inflate(R.layout.item_detail_subtask, parent, false);
             viewHolder = new SubtaskViewHolder(view);
         }
 
@@ -135,14 +151,14 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int viewType = holder.getItemViewType();
 
-        if (viewType == DetailTaskItem.VALUE) {
-            presenter.bindTaskTitleViewHolderToValue((TaskTitleViewHolder) holder, position);
+        if (viewType == TaskDetail.EDIT_VALUE) {
+            presenter.bindTaskTitleViewToValue((TaskTitleViewHolder) holder, position);
 
-        } else if (viewType == DetailTaskItem.ADD_SUBTASK || viewType == DetailTaskItem.NOTE || viewType == DetailTaskItem.SCHEDULE) {
-            presenter.bindBasicViewHolderToValue((BasicViewHolder) holder, position);
+        } else if (viewType == TaskDetail.ADD_SUBTASK || viewType == TaskDetail.NOTE || viewType == TaskDetail.SCHEDULE) {
+            presenter.bindBasicViewToValue((BasicViewHolder) holder, position);
 
-        } else if (viewType == DetailTaskItem.SUBTASK) {
-            presenter.bindSubtaskViewHolderToValue((SubtaskViewHolder) holder, position);
+        } else if (viewType == TaskDetail.SUBTASK) {
+            presenter.bindSubtaskViewToValue((SubtaskViewHolder) holder, position);
         }
     }
 
