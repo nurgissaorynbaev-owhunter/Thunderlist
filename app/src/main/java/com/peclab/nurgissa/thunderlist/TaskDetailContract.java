@@ -8,14 +8,27 @@ public interface TaskDetailContract {
     }
 
     interface BasicAdapterView {
-        void feelView(int image, String value);
+        void setImage(int image);
+        void setText(String text);
     }
 
     interface SubtaskAdapterView {
-        void feelView(String value);
+        void setText(String text);
     }
 
     interface TaskTitleAdapterView {
-        void feelView(int image, String value);
+        void setImage(int image);
+        void setText(String text);
+        void setTextHint(String text);
+    }
+
+    interface Interactor {
+        interface OnFinishedListener {
+            void onCreateFinished();
+        }
+
+        Task create(Task task);
+
+        Task getByTitle(String title);
     }
 }
