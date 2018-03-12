@@ -10,9 +10,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRecyclerViewAdapter.ViewHolder> {
-    private TaskListPresenter presenter;
+    private TaskListContract.Presenter presenter;
 
-    public TaskListRecyclerViewAdapter(TaskListPresenter presenter) {
+    public TaskListRecyclerViewAdapter(TaskListContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -59,7 +59,7 @@ public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRe
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.task_item_view, parent, false);
+                R.layout.item_view_task, parent, false);
 
         return new ViewHolder(view);
     }
