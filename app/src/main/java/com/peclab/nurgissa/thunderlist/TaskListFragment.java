@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 public class TaskListFragment extends Fragment implements TaskListContract.View {
     private EditText edtQuickTask;
-    private TaskListPresenter presenter;
+    private TaskListContract.Presenter presenter;
     private TaskListRecyclerViewAdapter adapter;
     private Listener contextListener;
     private FloatingActionButton fab;
@@ -42,9 +42,9 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new TaskListPresenter(this);
+        presenter = new TaskListPresenter(this, new TaskListInteractor());
 
-        final View view = inflater.inflate(R.layout.fragment_task_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_list_task, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_task_list);
         edtQuickTask = view.findViewById(R.id.edit_text_quick_task);
