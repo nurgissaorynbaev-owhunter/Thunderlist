@@ -19,13 +19,14 @@ public class NavDrawerRecyclerViewAdapter extends RecyclerView.Adapter<NavDrawer
         this.presenter = presenter;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements NavDrawerContract.AdapterView{
+    public class ViewHolder extends RecyclerView.ViewHolder implements NavDrawerContract.AdapterView, View.OnClickListener{
         private ImageView imageView;
         private TextView textViewTitle;
         private TextView textViewCount;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
 
             imageView = itemView.findViewById(R.id.item_nav_image);
             textViewTitle = itemView.findViewById(R.id.item_nav_title_text);
@@ -37,6 +38,11 @@ public class NavDrawerRecyclerViewAdapter extends RecyclerView.Adapter<NavDrawer
             this.textViewTitle.setText(title);
             this.imageView.setImageResource(imageView);
             this.imageView.setColorFilter(ContextCompat.getColor(activity, imageColor));
+        }
+
+        @Override
+        public void onClick(View v) {
+            presenter.onItemCategoryClicked(getAdapterPosition());
         }
     }
 
