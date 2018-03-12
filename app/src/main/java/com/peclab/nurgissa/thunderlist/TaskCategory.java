@@ -1,16 +1,16 @@
 package com.peclab.nurgissa.thunderlist;
 
 
-class Category {
+class TaskCategory {
     private String title;
     private int image;
     private int itemCount;
     private int imageColor;
 
-    public Category() {
+    public TaskCategory() {
     }
 
-    public Category(String title, int image, int imageColor) {
+    public TaskCategory(String title, int image, int imageColor) {
         this.title = title;
         this.image = image;
         this.imageColor = imageColor;
