@@ -50,7 +50,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_task_detail);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        presenter = new TaskDetailPresenter(this);
+        presenter = new TaskDetailPresenter(this, new TaskDetailInteractor());
 
         initializeRecyclerView();
 
@@ -99,15 +99,13 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     }
 
     private void initializeRecyclerView() {
-        String value = "";
+        String value = null;
         if (getArguments() != null) {
             value = getArguments().getString(EXTRA_VALUE);
+            getArguments().clear();
         }
 
-        presenter.addDetailTaskItem(R.drawable.ic_subject_white_24dp, value, DetailTaskItem.VALUE);
-        presenter.addDetailTaskItem(R.drawable.ic_event_white_24dp, getString(R.string.reminder_hint), DetailTaskItem.SCHEDULE);
-        presenter.addDetailTaskItem(R.drawable.ic_mode_edit_white_24dp, getString(R.string.note_hint), DetailTaskItem.NOTE);
-        presenter.addDetailTaskItem(R.drawable.ic_add_white_24dp, getString(R.string.sub_task_hint), DetailTaskItem.ADD_SUBTASK);
+        presenter.initializeTaskDetail(value);
     }
 
     @Override
