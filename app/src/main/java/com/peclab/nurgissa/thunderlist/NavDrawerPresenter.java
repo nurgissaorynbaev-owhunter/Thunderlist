@@ -6,7 +6,7 @@ import java.util.List;
 
 public class NavDrawerPresenter {
     private NavDrawerContract.View view;
-    private List<Category> categories;
+    private List<TaskCategory> categories;
 
     public NavDrawerPresenter(NavDrawerContract.View view) {
         this.view = view;
@@ -14,15 +14,28 @@ public class NavDrawerPresenter {
     }
 
     public void bindAdapterViewToData(NavDrawerContract.AdapterView adapterView, int position) {
-        Category category = categories.get(position);
-        adapterView.setItemNav(category.getTitle(), category.getImage(), category.getImageColor(), category.getItemCount());
+        TaskCategory taskCategory = categories.get(position);
+        adapterView.setItemNav(taskCategory.getTitle(), taskCategory.getImage(), taskCategory.getImageColor(), taskCategory.getItemCount());
     }
 
-    public void addNavDrawerCategory(Category category) {
-        categories.add(category);
+    public void addNavDrawerCategory(TaskCategory taskCategory, int position) {
+        categories.add(position, taskCategory);
+        view.notifyItemCategoryAdded(position);
+    }
+
+    public void addNavDrawerCategory(TaskCategory taskCategory) {
+        categories.add(taskCategory);
     }
 
     public int getCategoryItemCount() {
         return categories.size();
+    }
+
+    public void onItemCategoryClicked(int adapterPosition) {
+        int lastIndex = categories.size() - 1;
+
+        if (lastIndex == adapterPosition) {
+            view.createNewItemCategory(adapterPosition);
+        }
     }
 }
