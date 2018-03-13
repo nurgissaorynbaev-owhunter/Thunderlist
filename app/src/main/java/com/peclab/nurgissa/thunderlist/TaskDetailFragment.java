@@ -28,7 +28,7 @@ import android.widget.TimePicker;
 
 public class TaskDetailFragment extends Fragment implements TaskDetailContract.View, TaskDetailRecyclerViewAdapter.Listener {
     public static final String EXTRA_VALUE = "value";
-    private TaskDetailPresenter presenter;
+    private TaskDetailContract.Presenter presenter;
     private TaskDetailRecyclerViewAdapter adapter;
 
     public TaskDetailFragment() {
@@ -88,6 +88,8 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     }
 
     private void handleAcceptMenuItemClick() {
+        presenter.saveTaskDetail();
+
         TaskListFragment listFragment = new TaskListFragment();
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
