@@ -13,10 +13,10 @@ import android.widget.TextView;
 
 
 public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private TaskDetailPresenter presenter;
+    private TaskDetailContract.Presenter presenter;
     private TaskDetailFragment fragment;
 
-    public TaskDetailRecyclerViewAdapter(TaskDetailFragment fragment, TaskDetailPresenter presenter) {
+    public TaskDetailRecyclerViewAdapter(TaskDetailFragment fragment, TaskDetailContract.Presenter presenter) {
         this.presenter = presenter;
         this.fragment = fragment;
     }
@@ -56,13 +56,13 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         public void onClick(View v) {
             int viewType = presenter.getViewType(getAdapterPosition());
 
-            if (viewType == TaskDetail.NOTE) {
+            if (viewType == TaskDetail.VIEW_TYPE_NOTE) {
                 fragment.onNoteItemClick(v);
 
-            } else if (viewType == TaskDetail.ADD_SUBTASK) {
+            } else if (viewType == TaskDetail.VIEW_TYPE_ADD_SUBTASK) {
                 fragment.onAddSubtaskItemClick(v);
 
-            } else if (viewType == TaskDetail.SCHEDULE) {
+            } else if (viewType == TaskDetail.VIEW_TYPE_SCHEDULE) {
                 fragment.onScheduleItemClick(v);
 
             }
@@ -100,8 +100,6 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         @Override
         public void setImage(int image) {
             imageView.setImageResource(image);
-            imageView.setColorFilter(ContextCompat.getColor(fragment.getContext(), R.color.dark_gray));
-
         }
 
         @Override
@@ -113,7 +111,6 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         public void setTextHint(String text) {
             editText.setHint(text);
             editText.setHintTextColor(ContextCompat.getColor(fragment.getContext(), R.color.light_gray));
-
             imageView.setColorFilter(ContextCompat.getColor(fragment.getContext(), R.color.light_gray));
         }
     }
@@ -130,15 +127,15 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         RecyclerView.ViewHolder viewHolder = null;
         View view;
 
-        if (viewType == TaskDetail.EDIT_VALUE) {
+        if (viewType == TaskDetail.VIEW_TYPE_EDIT_VALUE) {
             view = inflater.inflate(R.layout.item_detail_task_title, parent, false);
             viewHolder = new TaskTitleViewHolder(view);
 
-        } else if (viewType == TaskDetail.ADD_SUBTASK || viewType == TaskDetail.NOTE || viewType == TaskDetail.SCHEDULE) {
+        } else if (viewType == TaskDetail.VIEW_TYPE_ADD_SUBTASK || viewType == TaskDetail.VIEW_TYPE_NOTE || viewType == TaskDetail.VIEW_TYPE_SCHEDULE) {
             view = inflater.inflate(R.layout.item_detail_basic, parent, false);
             viewHolder = new BasicViewHolder(view);
 
-        } else if (viewType == TaskDetail.SUBTASK) {
+        } else if (viewType == TaskDetail.VIEW_TYPE_SUBTASK) {
             view = inflater.inflate(R.layout.item_detail_subtask, parent, false);
             viewHolder = new SubtaskViewHolder(view);
         }
@@ -151,13 +148,13 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int viewType = holder.getItemViewType();
 
-        if (viewType == TaskDetail.EDIT_VALUE) {
+        if (viewType == TaskDetail.VIEW_TYPE_EDIT_VALUE) {
             presenter.bindTaskTitleViewToValue((TaskTitleViewHolder) holder, position);
 
-        } else if (viewType == TaskDetail.ADD_SUBTASK || viewType == TaskDetail.NOTE || viewType == TaskDetail.SCHEDULE) {
+        } else if (viewType == TaskDetail.VIEW_TYPE_ADD_SUBTASK || viewType == TaskDetail.VIEW_TYPE_NOTE || viewType == TaskDetail.VIEW_TYPE_SCHEDULE) {
             presenter.bindBasicViewToValue((BasicViewHolder) holder, position);
 
-        } else if (viewType == TaskDetail.SUBTASK) {
+        } else if (viewType == TaskDetail.VIEW_TYPE_SUBTASK) {
             presenter.bindSubtaskViewToValue((SubtaskViewHolder) holder, position);
         }
     }
