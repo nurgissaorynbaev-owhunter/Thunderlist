@@ -44,7 +44,6 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         setHasOptionsMenu(true);
         activity.setSupportActionBar(toolbar);
-
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_task_detail);
@@ -102,7 +101,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         String value = null;
         if (getArguments() != null) {
             value = getArguments().getString(EXTRA_VALUE);
-            getArguments().clear();
+            getArguments().remove(EXTRA_VALUE);
         }
 
         presenter.initializeTaskDetail(value);
