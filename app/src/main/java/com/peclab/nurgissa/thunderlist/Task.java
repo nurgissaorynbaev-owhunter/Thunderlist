@@ -1,14 +1,12 @@
 package com.peclab.nurgissa.thunderlist;
 
 
-import java.time.LocalDateTime;
-
 public class Task {
     private int id;
     private String title;
     private String note;
     private String subtask;
-    private LocalDateTime dateTime;
+    private String schedule;
 
     public int getId() {
         return id;
@@ -42,12 +40,12 @@ public class Task {
         this.subtask = subtask;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public String getSchedule() {
+        return schedule;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
     }
 
     @Override
