@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDetailPresenter implements TaskDetailContract.Interactor.OnFinishedListener {
+    private static final String NOTE_HINT = "Add a note..";
+    private static final String SCHEDULE_HINT = "Set Reminder";
+    private static final String TITLE_HINT = "Task title..";
+    private static final String ADD_SUBTASK_HINT = "Add a subtask";
     private List<TaskDetail> taskDetails;
     private TaskDetailContract.View view;
     private TaskDetailContract.Interactor interactor;
@@ -73,67 +77,44 @@ public class TaskDetailPresenter implements TaskDetailContract.Interactor.OnFini
     }
 
     public void initializeTaskDetail(String title) {
-        Task task = new Task();
+        Task task = null;
         if (title != null) {
             task = interactor.getByTitle(title);
         }
-
-        populateEditValueItem(task);
-        populateScheduleItem(task);
-        populateNoteItem(task);
-        populateAddSubtaskItem(task);
+        populateDetailViewItemValue(task);
     }
 
-    private void populateAddSubtaskItem(Task task) {
-        TaskDetail td = new TaskDetail();
-        td.setText("Add a subtask");
-        td.setViewType(TaskDetail.ADD_SUBTASK);
-        td.setImage(TaskDetail.ADD_SUBTASK_IMAGE);
+    private void populateDetailViewItemValue(Task task) {
+        TaskDetail tdAddSubtask = new TaskDetail();
+        TaskDetail tdNote = new TaskDetail();
+        TaskDetail tdSchedule = new TaskDetail();
+        TaskDetail tdEditValue = new TaskDetail();
 
-        taskDetails.add(td);
-    }
-
-    private void populateNoteItem(Task task) {
-        TaskDetail td = new TaskDetail();
-
-        if (task.getNote() != null) {
-            td.setText(task.getNote());
+        if (task != null) {
+            tdNote.setText(task.getNote());
+            tdSchedule.setText(String.valueOf(task.getDateTime()));
+            tdEditValue.setText(task.getTitle());
         } else {
-            td.setText("Add a note..");
+            tdNote.setText(NOTE_HINT);
+            tdSchedule.setText(SCHEDULE_HINT);
+            tdEditValue.setText(TITLE_HINT);
         }
 
-        td.setViewType(TaskDetail.NOTE);
-        td.setImage(TaskDetail.NOTE_IMAGE);
+        tdNote.setViewType(TaskDetail.NOTE);
+        tdNote.setImage(TaskDetail.NOTE_IMAGE);
+        tdSchedule.setViewType(TaskDetail.SCHEDULE);
+        tdSchedule.setImage(TaskDetail.SCHEDULE_IMAGE);
+        tdEditValue.setViewType(TaskDetail.EDIT_VALUE);
+        tdEditValue.setImage(TaskDetail.EDIT_VALUE_IMAGE);
 
-        taskDetails.add(td);
+        tdAddSubtask.setText(ADD_SUBTASK_HINT);
+        tdAddSubtask.setViewType(TaskDetail.ADD_SUBTASK);
+        tdAddSubtask.setImage(TaskDetail.ADD_SUBTASK_IMAGE);
+
+        taskDetails.add(0, tdEditValue);
+        taskDetails.add(1, tdSchedule);
+        taskDetails.add(2, tdNote);
+        taskDetails.add(3, tdAddSubtask);
     }
 
-    private void populateScheduleItem(Task task) {
-        TaskDetail td = new TaskDetail();
-
-        if (task.getDateTime() != null) {
-            td.setText(String.valueOf(task.getDateTime()));
-        } else {
-            td.setText("Set Reminder");
-        }
-
-        td.setViewType(TaskDetail.SCHEDULE);
-        td.setImage(TaskDetail.SCHEDULE_IMAGE);
-
-        taskDetails.add(td);
-    }
-
-    private void populateEditValueItem(Task task) {
-        TaskDetail td = new TaskDetail();
-
-        if (task.getTitle() != null) {
-            td.setText(task.getTitle());
-        } else {
-            td.setText("Task title..");
-        }
-        td.setViewType(TaskDetail.EDIT_VALUE);
-        td.setImage(TaskDetail.EDIT_VALUE_IMAGE);
-
-        taskDetails.add(td);
-    }
 }
