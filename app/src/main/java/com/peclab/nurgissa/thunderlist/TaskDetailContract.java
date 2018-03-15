@@ -1,15 +1,23 @@
 package com.peclab.nurgissa.thunderlist;
 
 
+import java.util.List;
+
 public interface TaskDetailContract {
 
     interface View {
         void notifySubtaskAddedToDetailTask();
+        void notifyDataSetChanged();
+
+        int getColorLightOrange();
+        int getColorLightBlue();
+        int getColorLightGray();
+        int getColorDarkGray();
     }
 
     interface BasicAdapterView {
-        void setImage(int image);
-        void setText(String text);
+        void setItem(String text, int image, int color, int textColor);
+        void setItemHint(String text, int image, int color);
     }
 
     interface SubtaskAdapterView {
@@ -17,9 +25,8 @@ public interface TaskDetailContract {
     }
 
     interface TaskTitleAdapterView {
-        void setImage(int image);
-        void setText(String text);
-        void setTextHint(String text);
+        void setItem(String text, int image, int color, int textColor);
+        void setItemHint(String text, int image, int color);
     }
 
     interface Interactor {
@@ -36,11 +43,15 @@ public interface TaskDetailContract {
         void initializeTaskDetail(String value);
         void addSubtask(String value);
         void saveTaskDetail();
+        List<TaskDetail> getTaskDetails();
 
         int getViewType(int position);
         int getDetailTaskItemCount();
         void bindTaskTitleViewToValue(TaskTitleAdapterView adapterView, int position);
         void bindBasicViewToValue(BasicAdapterView adapterView, int position);
         void bindSubtaskViewToValue(SubtaskAdapterView adapterView, int position);
+
+        void setNoteValue(Task task);
+        void setScheduleValue(String value);
     }
 }
