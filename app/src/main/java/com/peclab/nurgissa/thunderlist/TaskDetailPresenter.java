@@ -23,20 +23,21 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
     @Override
     public void bindTaskTitleViewToValue(TaskDetailContract.TaskTitleAdapterView adapterView, int position) {
         TaskDetail td = taskDetails.get(position);
-        adapterView.setImage(td.getImage());
-
-        if (td.getText().equals(HINT_EDIT_VALUE)) {
-            adapterView.setTextHint(td.getText());
+        if (!td.isHint()) {
+            adapterView.setItem(td.getText(), td.getImage(), td.getImageColor(), td.getTextColor());
         } else {
-            adapterView.setText(td.getText());
+            adapterView.setItemHint(td.getText(), td.getImage(), td.getImageColor());
         }
     }
 
     @Override
     public void bindBasicViewToValue(TaskDetailContract.BasicAdapterView adapterView, int position) {
         TaskDetail td = taskDetails.get(position);
-        adapterView.setText(td.getText());
-        adapterView.setImage(td.getImage());
+        if (!td.isHint()) {
+            adapterView.setItem(td.getText(), td.getImage(), td.getImageColor(), td.getTextColor());
+        } else {
+            adapterView.setItemHint(td.getText(), td.getImage(), td.getImageColor());
+        }
     }
 
     @Override
@@ -78,11 +79,16 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
         if (title != null) {
             task = interactor.getByTitle(title);
         }
+        populateDetailViewItem(task);
+    }
 
+    private void populateDetailViewItem(Task task) {
         populateDetailViewItemEditValue(task);
         populateDetailViewItemSchedule(task);
         populateDetailViewItemNote(task);
         populateDetailViewItemSubtask();
+
+        view.notifyDataSetChanged();
     }
 
     private void populateDetailViewItemEditValue(Task task) {
@@ -91,8 +97,14 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
         if (task != null && task.getTitle() != null) {
             td.setId(task.getId());
             td.setText(task.getTitle());
+            td.setImageColor(view.getColorDarkGray());
+            td.setTextColor(view.getColorDarkGray());
+            td.setHint(false);
         } else {
             td.setText(HINT_EDIT_VALUE);
+            td.setImageColor(view.getColorLightGray());
+            td.setTextColor(view.getColorLightGray());
+            td.setHint(true);
         }
         td.setViewType(TaskDetail.VIEW_TYPE_EDIT_VALUE);
         td.setImage(TaskDetail.IMAGE_EDIT_VALUE);
@@ -105,13 +117,17 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
 
         if (task != null && task.getSchedule() != null) {
             td.setText(task.getSchedule());
-
+            td.setTextColor(view.getColorDarkGray());
+            td.setImageColor(view.getColorLightBlue());
+            td.setHint(false);
         } else {
             td.setText(HINT_SCHEDULE);
+            td.setImageColor(view.getColorLightGray());
+            td.setTextColor(view.getColorLightGray());
+            td.setHint(true);
         }
         td.setViewType(TaskDetail.VIEW_TYPE_SCHEDULE);
         td.setImage(TaskDetail.IMAGE_SCHEDULE);
-
         taskDetails.add(1, td);
     }
 
@@ -119,9 +135,15 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
         TaskDetail td = new TaskDetail();
 
         if (task != null && task.getNote() != null) {
-            td.setText(task.getTitle());
+            td.setText(task.getNote());
+            td.setTextColor(view.getColorDarkGray());
+            td.setImageColor(view.getColorLightOrange());
+            td.setHint(false);
         } else {
             td.setText(HINT_NOTE);
+            td.setImageColor(view.getColorLightGray());
+            td.setTextColor(view.getColorLightGray());
+            td.setHint(true);
         }
         td.setViewType(TaskDetail.VIEW_TYPE_NOTE);
         td.setImage(TaskDetail.IMAGE_NOTE);
@@ -135,6 +157,8 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
         td.setText(HINT_ADD_SUBTASK);
         td.setViewType(TaskDetail.VIEW_TYPE_ADD_SUBTASK);
         td.setImage(TaskDetail.IMAGE_ADD_SUBTASK);
+        td.setImageColor(view.getColorLightGray());
+        td.setTextColor(view.getColorLightGray());
 
         taskDetails.add(3, td);
     }
@@ -160,11 +184,28 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
                     break;
             }
         }
-
 //        if (task.getId() != 0) {
 //            interactor.saveById(task, task.getId());
 //        } else {
 //            interactor.save(task);
 //        }
+    }
+
+    @Override
+    public void setNoteValue(Task task) {
+        populateDetailViewItem(task);
+    }
+
+    @Override
+    public void setScheduleValue(String value) {
+        TaskDetail td = taskDetails.get(TaskDetail.VIEW_TYPE_SCHEDULE);
+        td.setText(value);
+
+        view.notifyDataSetChanged();
+    }
+
+    @Override
+    public List<TaskDetail> getTaskDetails() {
+        return taskDetails;
     }
 }
