@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -26,6 +25,7 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
 
     interface Listener {
         void onItemClick(String value);
+        void onClickFAB();
     }
 
     public TaskListFragment() {
@@ -53,7 +53,7 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
         adapter = new TaskListRecyclerViewAdapter(presenter);
 
         handleQuickTaskEditText();
-        handleOnClickAddTask();
+        onClickFAB();
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -91,17 +91,11 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
         });
     }
 
-    private void handleOnClickAddTask() {
+    private void onClickFAB() {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TaskDetailFragment detailFragment = new TaskDetailFragment();
-
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_fragment_container, detailFragment);
-                transaction.addToBackStack(null);
-
-                transaction.commit();
+                contextListener.onClickFAB();
             }
         });
     }
