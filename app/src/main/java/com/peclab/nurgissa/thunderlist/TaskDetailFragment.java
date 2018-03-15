@@ -3,11 +3,13 @@ package com.peclab.nurgissa.thunderlist;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -26,34 +28,45 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
-public class TaskDetailFragment extends Fragment implements TaskDetailContract.View, TaskDetailRecyclerViewAdapter.Listener {
+public class TaskDetailFragment extends Fragment implements TaskDetailContract.View {
     public static final String EXTRA_VALUE = "value";
+    public static final String EXTRA_NOTE = "note";
+    private static final String SCHEDULE = "schedule";
+    private static final String EXTRA_TITLE = "editValue";
+    private String dateTime;
     private TaskDetailContract.Presenter presenter;
     private TaskDetailRecyclerViewAdapter adapter;
+    private Listener listener;
+
+    interface Listener {
+        void onEditTextNoteItemClick(Bundle state);
+    }
 
     public TaskDetailFragment() {
         // Required empty public constructor
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (Listener) getActivity();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_detail_task, container, false);
 
-        Toolbar toolbar = view.findViewById(R.id.toolbar_detail);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        setHasOptionsMenu(true);
-        activity.setSupportActionBar(toolbar);
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setToolbar(view);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_task_detail);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         presenter = new TaskDetailPresenter(this, new TaskDetailInteractor());
+        adapter = new TaskDetailRecyclerViewAdapter(this, presenter);
 
         initializeRecyclerView();
-
-        adapter = new TaskDetailRecyclerViewAdapter(this, presenter);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
 
@@ -63,6 +76,14 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         recyclerView.setAdapter(adapter);
 
         return view;
+    }
+
+    private void setToolbar(View view) {
+        Toolbar toolbar = view.findViewById(R.id.toolbar_detail);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        setHasOptionsMenu(true);
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -90,35 +111,67 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     private void handleAcceptMenuItemClick() {
         presenter.saveTaskDetail();
 
-        TaskListFragment listFragment = new TaskListFragment();
-
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment_container, listFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
+        Intent intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
+        startActivity(intent);
     }
 
     private void initializeRecyclerView() {
-        String value = null;
         if (getArguments() != null) {
-            value = getArguments().getString(EXTRA_VALUE);
-            getArguments().remove(EXTRA_VALUE);
+            String value = getArguments().getString(EXTRA_VALUE);
+
+            if (value != null) {
+                presenter.initializeTaskDetail(value);
+                getArguments().remove(EXTRA_VALUE);
+            } else {
+                setEditTextNoteValue();
+            }
+        } else {
+            presenter.initializeTaskDetail(null);
+        }
+    }
+
+    private void setEditTextNoteValue() {
+        String schedule = getArguments().getString(SCHEDULE);
+        String title = getArguments().getString(EXTRA_TITLE);
+        String note = getArguments().getString(EXTRA_NOTE);
+
+        Task task = new Task();
+        task.setNote(note);
+        task.setTitle(title);
+        task.setSchedule(schedule);
+
+        presenter.setNoteValue(task);
+
+        if (schedule != null)
+            getArguments().remove(SCHEDULE);
+
+        if (title != null)
+            getArguments().remove(EXTRA_TITLE);
+
+        if (note != null)
+            getArguments().remove(EXTRA_NOTE);
+    }
+
+    public void onNoteItemClick() {
+        listener.onEditTextNoteItemClick(getState());
+    }
+
+    public Bundle getState() {
+        Bundle bundle = new Bundle();
+
+        TaskDetail tdSchedule = presenter.getTaskDetails().get(TaskDetail.VIEW_TYPE_SCHEDULE);
+        TaskDetail tdValue = presenter.getTaskDetails().get(TaskDetail.VIEW_TYPE_EDIT_VALUE);
+
+        if (!tdSchedule.isHint()) {
+            bundle.putString(SCHEDULE, tdSchedule.getText());
         }
 
-        presenter.initializeTaskDetail(value);
+        if (!tdValue.isHint()) {
+            bundle.putString(EXTRA_TITLE, tdValue.getText());
+        }
+        return bundle;
     }
 
-    @Override
-    public void onNoteItemClick(View view) {
-        EditTextFragment fragment = new EditTextFragment();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment_container, fragment, null)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
     public void onAddSubtaskItemClick(final View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final EditText input = new EditText(getContext());
@@ -150,7 +203,6 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    @Override
     public void onScheduleItemClick(View view) {
         Calendar calendar = Calendar.getInstance();
 
@@ -162,6 +214,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String date = dayOfMonth + "." + month + "." + year;
+                dateTime = date;
                 setTimePicker();
             }
         }, year, month, day);
@@ -179,6 +232,8 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 String time = hourOfDay + ":" + minute;
+                dateTime = dateTime + " at " + time;
+                presenter.setScheduleValue(dateTime);
             }
         }, hour, minute, false);
 
@@ -186,7 +241,32 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void notifySubtaskAddedToDetailTask() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public int getColorLightOrange() {
+        return ContextCompat.getColor(getContext(), R.color.orange);
+    }
+
+    @Override
+    public int getColorLightBlue() {
+        return ContextCompat.getColor(getContext(), R.color.light_blue);
+    }
+
+    @Override
+    public int getColorLightGray() {
+        return ContextCompat.getColor(getContext(), R.color.light_gray);
+    }
+
+    @Override
+    public int getColorDarkGray() {
+        return ContextCompat.getColor(getContext(), R.color.dark_gray);
     }
 }
