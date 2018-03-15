@@ -17,6 +17,9 @@ public class TaskDetail {
     private String text;
     private int image;
     private int viewType;
+    private boolean isHint;
+    private int imageColor;
+    private int textColor;
 
     public int getId() {
         return id;
@@ -48,5 +51,29 @@ public class TaskDetail {
 
     public void setViewType(int viewType) {
         this.viewType = viewType;
+    }
+
+    public boolean isHint() {
+        return isHint;
+    }
+
+    public void setHint(boolean hint) {
+        isHint = hint;
+    }
+
+    public int getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+    }
+
+    public int getImageColor() {
+        return imageColor;
+    }
+
+    public void setImageColor(int imageColor) {
+        this.imageColor = imageColor;
     }
 }
