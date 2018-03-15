@@ -15,10 +15,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 
-public class MainActivity extends AppCompatActivity implements TaskListFragment.Listener, NavDrawerContract.View {
+public class MainActivity extends AppCompatActivity implements TaskListFragment.Listener, TaskDetailFragment.Listener, EditTextFragment.Listener , NavDrawerContract.View {
     private DrawerLayout drawerLayout;
     private NavDrawerPresenter presenter;
     private NavDrawerRecyclerViewAdapter adapter;
+    private Bundle state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
     private void initializeDatabase() {
         new DBConnection(this);
     }
-    
+
     private void bindDrawerToggleToNavigation() {
         drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open_drawer, R.string.nav_close_drawer);
@@ -69,6 +70,10 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
+
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+
         } else {
             super.onBackPressed();
         }
@@ -85,6 +90,17 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+        transaction.replace(R.id.main_fragment_container, detailFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
+
+    @Override
+    public void onClickFAB() {
+        TaskDetailFragment detailFragment = new TaskDetailFragment();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment_container, detailFragment);
         transaction.addToBackStack(null);
 
@@ -128,5 +144,30 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
     @Override
     public void notifyItemCategoryAdded(int position) {
         adapter.notifyItemInserted(position);
+    }
+
+    @Override
+    public void onEditTextNoteItemClick(Bundle state) {
+        this.state = state;
+
+        EditTextFragment editTextFragment = new EditTextFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment_container, editTextFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
+
+    @Override
+    public void getText(String value) {
+        TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
+        state.putString(TaskDetailFragment.EXTRA_NOTE, value);
+        taskDetailFragment.setArguments(state);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.main_fragment_container, taskDetailFragment);
+
+        transaction.commit();
     }
 }
