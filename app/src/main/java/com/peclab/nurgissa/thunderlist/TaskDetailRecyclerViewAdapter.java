@@ -21,12 +21,32 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         this.fragment = fragment;
     }
 
-    public interface Listener {
-        void onNoteItemClick(View view);
+    public class TaskTitleViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.TaskTitleAdapterView {
+        private ImageView imageView;
+        private EditText editText;
 
-        void onAddSubtaskItemClick(View view);
+        public TaskTitleViewHolder(View itemView) {
+            super(itemView);
 
-        void onScheduleItemClick(View view);
+            this.imageView = itemView.findViewById(R.id.task_title_item_imageView);
+            this.editText = itemView.findViewById(R.id.task_title_item_editText);
+        }
+
+        @Override
+        public void setItem(String text, int image, int color, int textColor) {
+            editText.setText(text);
+            editText.setTextColor(textColor);
+            imageView.setImageResource(image);
+            imageView.setColorFilter(color);
+        }
+
+        @Override
+        public void setItemHint(String text, int image, int color) {
+            editText.setHint(text);
+            editText.setHintTextColor(color);
+            imageView.setImageResource(image);
+            imageView.setColorFilter(color);
+        }
     }
 
     public class BasicViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.BasicAdapterView, View.OnClickListener {
@@ -43,13 +63,19 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         }
 
         @Override
-        public void setImage(int image) {
+        public void setItem(String text, int image, int color, int textColor) {
+            textView.setText(text);
+            textView.setTextColor(textColor);
             imageView.setImageResource(image);
+            imageView.setColorFilter(color);
         }
 
         @Override
-        public void setText(String text) {
-            textView.setText(text);
+        public void setItemHint(String text, int image, int color) {
+            textView.setHint(text);
+            textView.setHintTextColor(color);
+            imageView.setImageResource(image);
+            imageView.setColorFilter(color);
         }
 
         @Override
@@ -57,14 +83,13 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             int viewType = presenter.getViewType(getAdapterPosition());
 
             if (viewType == TaskDetail.VIEW_TYPE_NOTE) {
-                fragment.onNoteItemClick(v);
+                fragment.onNoteItemClick();
 
             } else if (viewType == TaskDetail.VIEW_TYPE_ADD_SUBTASK) {
                 fragment.onAddSubtaskItemClick(v);
 
             } else if (viewType == TaskDetail.VIEW_TYPE_SCHEDULE) {
                 fragment.onScheduleItemClick(v);
-
             }
         }
     }
@@ -83,35 +108,6 @@ public class TaskDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         @Override
         public void setText(String text) {
             textView.setText(text);
-        }
-    }
-
-    public class TaskTitleViewHolder extends RecyclerView.ViewHolder implements TaskDetailContract.TaskTitleAdapterView {
-        private ImageView imageView;
-        private EditText editText;
-
-        public TaskTitleViewHolder(View itemView) {
-            super(itemView);
-
-            this.imageView = itemView.findViewById(R.id.task_title_item_imageView);
-            this.editText = itemView.findViewById(R.id.task_title_item_editText);
-        }
-
-        @Override
-        public void setImage(int image) {
-            imageView.setImageResource(image);
-        }
-
-        @Override
-        public void setText(String text) {
-            editText.setText(text);
-        }
-
-        @Override
-        public void setTextHint(String text) {
-            editText.setHint(text);
-            editText.setHintTextColor(ContextCompat.getColor(fragment.getContext(), R.color.light_gray));
-            imageView.setColorFilter(ContextCompat.getColor(fragment.getContext(), R.color.light_gray));
         }
     }
 
