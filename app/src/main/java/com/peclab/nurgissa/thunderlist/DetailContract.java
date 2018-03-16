@@ -22,8 +22,10 @@ public interface DetailContract {
     interface Interactor {
         interface OnFinishedListener {
             void onSaveFinished();
+            void onUpdateFinished();
         }
         void save(OnFinishedListener onFinishedListener, Task task);
+        void update(OnFinishedListener onFinishedListener, Task task);
         Task getByTitle(String title);
     }
 }
