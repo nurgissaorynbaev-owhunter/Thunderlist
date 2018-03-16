@@ -16,7 +16,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("Create table Task (" +
                 "_id integer primary key autoincrement," +
                 "title text," +
-                "schedule text, " +
+                "reminder_date text, " +
+                "reminder_time text, " +
                 "note text);");
     }
 
