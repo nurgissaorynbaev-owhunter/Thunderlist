@@ -49,11 +49,20 @@ public class DetailPresenter implements DetailContract.Presenter, DetailContract
 
     @Override
     public void saveDetail() {
-        interactor.save(this, task);
+        if (task.getId() == 0) {
+            interactor.save(this, task);
+        } else {
+            interactor.update(this, task);
+        }
     }
 
     @Override
     public void onSaveFinished() {
+        view.moveToMainList();
+    }
+
+    @Override
+    public void onUpdateFinished() {
         view.moveToMainList();
     }
 }
