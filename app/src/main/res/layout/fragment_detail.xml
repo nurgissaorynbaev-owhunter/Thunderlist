@@ -1,0 +1,90 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.peclab.nurgissa.thunderlist.DetailFragment">
+
+    <include layout="@layout/toolbar_main"
+        android:id="@+id/tlb_detail" />
+
+    <LinearLayout
+        android:background="@color/light_blue"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="230dp">
+
+        <TextView
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="50dp"
+            android:text="Task Title"
+            android:textColor="@color/orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/edt_detail_title"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="50dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="50dp"
+            android:text="Notes"
+            android:textColor="@color/orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/edt_detail_note"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="50dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:layout_marginStart="15dp"
+            android:layout_gravity="center"
+            android:id="@+id/imv_detail_schedule"
+            android:src="@drawable/ic_event_white_24dp"
+            android:tint="@color/dark_gray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/txv_detail_reminder"
+            android:layout_marginStart="10dp"
+            android:hint="Reminder"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="2dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <CheckBox
+            android:id="@+id/chb_detail_completed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="11dp" />
+
+        <TextView
+            android:id="@+id/txv_detail_completed"
+            android:layout_marginStart="5dp"
+            android:layout_gravity="center"
+            android:text="Completed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>
