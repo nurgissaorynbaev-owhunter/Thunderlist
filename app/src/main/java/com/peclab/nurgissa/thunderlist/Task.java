@@ -5,8 +5,8 @@ public class Task {
     private int id;
     private String title;
     private String note;
-    private String subtask;
-    private String schedule;
+    private String reminderDate;
+    private String reminderTime;
 
     public int getId() {
         return id;
@@ -32,20 +32,20 @@ public class Task {
         this.note = note;
     }
 
-    public String getSubtask() {
-        return subtask;
+    public String getReminderDate() {
+        return reminderDate;
     }
 
-    public void setSubtask(String subtask) {
-        this.subtask = subtask;
+    public void setReminderDate(String reminderDate) {
+        this.reminderDate = reminderDate;
     }
 
-    public String getSchedule() {
-        return schedule;
+    public String getReminderTime() {
+        return reminderTime;
     }
 
-    public void setSchedule(String schedule) {
-        this.schedule = schedule;
+    public void setReminderTime(String reminderTime) {
+        this.reminderTime = reminderTime;
     }
 
     @Override
