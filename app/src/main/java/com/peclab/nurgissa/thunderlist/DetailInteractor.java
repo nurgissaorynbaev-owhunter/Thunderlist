@@ -56,4 +56,21 @@ public class DetailInteractor implements DetailContract.Interactor {
 
         return task;
     }
+
+    @Override
+    public void update(OnFinishedListener onFinishedListener, Task task) {
+        SQLiteDatabase db = DBConnection.getConnection().getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMN_TITLE, task.getTitle());
+        contentValues.put(COLUMN_REMINDER_DATE, task.getReminderDate());
+        contentValues.put(COLUMN_REMINDER_TIME, task.getReminderTime());
+        contentValues.put(COLUMN_NOTE, task.getNote());
+
+        db.update(TABLE_NAME, contentValues, COLUMN_ID + "=?", new String[] {String.valueOf(task.getId())});
+
+        onFinishedListener.onUpdateFinished();
+
+        db.close();
+    }
 }
