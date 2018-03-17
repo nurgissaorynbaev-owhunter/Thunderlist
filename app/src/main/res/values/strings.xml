@@ -1,6 +1,22 @@
 <resources>
     <string name="app_name">Thunderlist</string>
+    <string name="add_quick_task_hint">Add Quick Task Here</string>
+    <string name="reminder_hint">Set reminder</string>
+    <string name="sub_task_hint">Add a subtask</string>
+    <string name="note_hint">Add a note..</string>
+    <string name="action_search">Search</string>
+    <string name="search_bar_hint">Search tasks</string>
+    <string name="accept_action">Accept</string>
+    <string name="nav_inbox">Inbox</string>
+    <string name="nav_groceries">Groceries</string>
+    <string name="nav_private">Private</string>
+    <string name="nav_work">Work</string>
+    <string name="nav_add_new_category">Add New Category</string>
+    <string name="nav_close_drawer">Close navigation drawer</string>
+    <string name="nav_open_drawer">Open navigation drawer</string>
+    <string name="add_category">Add category</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

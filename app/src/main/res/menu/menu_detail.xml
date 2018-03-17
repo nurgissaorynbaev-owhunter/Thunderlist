@@ -4,7 +4,7 @@
 
     <item android:id="@+id/menu_item_accept_action"
         android:icon="@drawable/ic_check_white_24dp"
-        android:title="@string/accept_action"
+        android:name="@string/accept_action"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"/>
 </menu>
