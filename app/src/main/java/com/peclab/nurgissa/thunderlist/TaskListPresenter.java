@@ -60,7 +60,7 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
 
     @Override
     public void taskClicked(int position) {
-        view.deliverTaskTitle(tasks.get(position).getTitle());
+        view.deliverTaskDetailTitle(tasks.get(position).getTitle());
     }
 
     @Override
