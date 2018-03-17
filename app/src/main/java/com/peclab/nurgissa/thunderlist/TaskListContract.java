@@ -8,7 +8,7 @@ public interface TaskListContract {
     interface View {
         void notifyDataAddedToTaskList(int position);
         void notifyDataRemovedFromTaskList(int position);
-        void deliverTaskTitle(String value);
+        void deliverTaskDetailTitle(String value);
     }
 
     interface Presenter {
