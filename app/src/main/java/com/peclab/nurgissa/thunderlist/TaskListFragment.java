@@ -42,7 +42,7 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new TaskListPresenter(this, new TaskListInteractor());
+        presenter = new TaskListPresenter(this, new TaskListInteractor(DatabaseHelper.getInstance(getActivity())));
 
         final View view = inflater.inflate(R.layout.fragment_list_task, container, false);
 
@@ -101,7 +101,7 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
     }
 
     @Override
-    public void deliverTaskTitle(String value) {
+    public void deliverTaskDetailTitle(String value) {
         contextListener.onItemClick(value);
     }
 }
