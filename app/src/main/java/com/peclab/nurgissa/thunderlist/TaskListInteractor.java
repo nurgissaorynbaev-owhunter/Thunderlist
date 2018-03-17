@@ -13,9 +13,15 @@ public class TaskListInteractor implements TaskListContract.Interactor {
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_TITLE = "title";
 
+    private DatabaseHelper databaseHelper;
+
+    public TaskListInteractor(DatabaseHelper databaseHelper) {
+        this.databaseHelper = databaseHelper;
+    }
+
     @Override
     public Task create(Task task, OnFinishedListener listener) {
-        SQLiteDatabase db = DBConnection.getConnection().getWritableDatabase();
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(COLUMN_TITLE, task.getTitle());
@@ -28,7 +34,7 @@ public class TaskListInteractor implements TaskListContract.Interactor {
 
     @Override
     public Task get(int id) {
-        SQLiteDatabase db = DBConnection.getConnection().getReadableDatabase();
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
         Task task = null;
 
         Cursor cursor = db.query("Task", new String[]{"_id, title"}, "_id=?", new String[]{String.valueOf(id)}, null, null, null);
@@ -45,7 +51,7 @@ public class TaskListInteractor implements TaskListContract.Interactor {
 
     @Override
     public List<Task> getAll() {
-        SQLiteDatabase db = DBConnection.getConnection().getReadableDatabase();
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
         List<Task> tasks = new ArrayList<>();
 
         Cursor cursor = db.rawQuery("Select * from " + TABLE_NAME, null);
