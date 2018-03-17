@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -32,6 +34,7 @@ public class DetailFragment extends Fragment implements DetailContract.View {
     private EditText edtNote;
     private TextView txvReminder;
     private CheckBox chbCompleted;
+    private ImageView imvReminder;
     private Listener contextListener;
 
     interface Listener {
@@ -56,6 +59,7 @@ public class DetailFragment extends Fragment implements DetailContract.View {
         edtNote = view.findViewById(R.id.edt_detail_note);
         txvReminder = view.findViewById(R.id.txv_detail_reminder);
         chbCompleted = view.findViewById(R.id.chb_detail_completed);
+        imvReminder = view.findViewById(R.id.imv_detail_reminder);
 
         presenter = new DetailPresenter(this, new DetailInteractor());
 
@@ -191,6 +195,7 @@ public class DetailFragment extends Fragment implements DetailContract.View {
     @Override
     public void initDetailReminder(String reminder) {
         txvReminder.setText(reminder);
+        imvReminder.setColorFilter(ContextCompat.getColor(getContext(), R.color.light_blue));
     }
 
     @Override
