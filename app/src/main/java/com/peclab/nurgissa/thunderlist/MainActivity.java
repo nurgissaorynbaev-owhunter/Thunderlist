@@ -14,27 +14,31 @@ import android.text.InputType;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements TaskListFragment.Listener, TaskDetailFragment.Listener, EditTextFragment.Listener , NavDrawerContract.View {
+
+public class MainActivity extends AppCompatActivity implements TaskListFragment.Listener, NavDrawerContract.View, DetailFragment.Listener {
     private DrawerLayout drawerLayout;
     private NavDrawerPresenter presenter;
     private NavDrawerRecyclerViewAdapter adapter;
-    private Bundle state;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        RecyclerView recyclerView = findViewById(R.id.nav_recycler_view);
 
         initializeDatabase();
 
-        presenter = new NavDrawerPresenter(this);
+        presenter = new NavDrawerPresenter(this, new CategoryInteractor(databaseHelper));
+        adapter = new NavDrawerRecyclerViewAdapter(this, presenter);
+
+        initializeNavDrawerDefaultCategory();
 
         bindDrawerToggleToNavigation();
-        initializeNavDrawerByDefaultContent();
 
-        RecyclerView recyclerView = drawerLayout.findViewById(R.id.nav_recycler_view);
-        adapter = new NavDrawerRecyclerViewAdapter(this, presenter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
     }
 
     private void initializeDatabase() {
-        new DBConnection(this);
+        databaseHelper = DatabaseHelper.getInstance(this);
     }
 
     private void bindDrawerToggleToNavigation() {
@@ -58,21 +62,24 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
         toggle.syncState();
     }
 
-    private void initializeNavDrawerByDefaultContent() {
-        presenter.addNavDrawerCategory(new TaskCategory("Inbox", R.drawable.ic_inbox_black_24dp, R.color.light_blue));
-        presenter.addNavDrawerCategory(new TaskCategory("Groceries", R.drawable.ic_shopping_cart_black_24dp, R.color.light_violet));
-        presenter.addNavDrawerCategory(new TaskCategory("Work", R.drawable.ic_work_black_24dp, R.color.dark_orange));
-        presenter.addNavDrawerCategory(new TaskCategory("Completed", R.drawable.ic_done_all_black_24dp, R.color.dark_green));
-        presenter.addNavDrawerCategory(new TaskCategory("Add category", R.drawable.ic_add_white_24dp, R.color.light_gray));
+    private void initializeNavDrawerDefaultCategory() {
+        if (!presenter.doesCategoriesExist()) {
+
+            List<Category> categories = new ArrayList<>();
+            categories.add(new Category("Inbox", R.drawable.ic_inbox_black_24dp, R.color.light_blue));
+            categories.add(new Category("Groceries", R.drawable.ic_shopping_cart_black_24dp, R.color.light_violet));
+            categories.add(new Category("Work", R.drawable.ic_work_black_24dp, R.color.dark_orange));
+            categories.add(new Category("Completed", R.drawable.ic_done_all_black_24dp, R.color.dark_green));
+            categories.add(new Category("Add category", R.drawable.ic_add_white_24dp, R.color.light_gray));
+
+            presenter.initDefaultCategories(categories);
+        }
     }
 
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-
-        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
 
         } else {
             super.onBackPressed();
@@ -81,10 +88,10 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
 
     @Override
     public void onItemClick(String value) {
-        TaskDetailFragment detailFragment = new TaskDetailFragment();
+        DetailFragment detailFragment = new DetailFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(TaskDetailFragment.EXTRA_VALUE, value);
+        bundle.putString(DetailFragment.EXTRA_VALUE, value);
 
         detailFragment.setArguments(bundle);
 
@@ -98,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
 
     @Override
     public void onClickFAB() {
-        TaskDetailFragment detailFragment = new TaskDetailFragment();
+        DetailFragment detailFragment = new DetailFragment();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment_container, detailFragment);
@@ -124,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
                 int image = R.drawable.ic_format_list_bulleted_black_24dp;
                 int imageColor = R.color.dark_gray;
 
-                presenter.addNavDrawerCategory(new TaskCategory(categoryName, image, imageColor), position);
+                presenter.addNavDrawerCategory(new Category(categoryName, image, imageColor), position);
                 imm.hideSoftInputFromWindow(edtInput.getWindowToken(), 0);
             }
         });
@@ -147,26 +154,17 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
     }
 
     @Override
-    public void onEditTextNoteItemClick(Bundle state) {
-        this.state = state;
-
-        EditTextFragment editTextFragment = new EditTextFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment_container, editTextFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
+    public void notifyCategoryDataChanged() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void getText(String value) {
-        TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
-        state.putString(TaskDetailFragment.EXTRA_NOTE, value);
-        taskDetailFragment.setArguments(state);
+    public void showMainList() {
+        TaskListFragment listFragment = new TaskListFragment();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment_container, listFragment);
         transaction.addToBackStack(null);
-        transaction.replace(R.id.main_fragment_container, taskDetailFragment);
 
         transaction.commit();
     }
