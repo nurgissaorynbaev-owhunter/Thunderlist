@@ -7,6 +7,7 @@ public class Task {
     private String note;
     private String reminderDate;
     private String reminderTime;
+    private int categoryId;
 
     public int getId() {
         return id;
@@ -46,6 +47,14 @@ public class Task {
 
     public void setReminderTime(String reminderTime) {
         this.reminderTime = reminderTime;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     @Override

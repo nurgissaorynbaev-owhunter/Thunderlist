@@ -28,7 +28,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "title text," +
                 "reminder_date text, " +
                 "reminder_time text, " +
-                "note text);");
+                "note text, " +
+                "category_id integer, foreign key(category_id) references Category(_id));");
 
         db.execSQL("Create table Category (" +
                 "_id integer primary key autoincrement, " +

@@ -5,6 +5,7 @@ public class DetailPresenter implements DetailContract.Presenter, DetailContract
     private DetailContract.View view;
     private DetailContract.Interactor interactor;
     private Task task;
+    private String[] category;
 
     public DetailPresenter(DetailContract.View view, DetailContract.Interactor interactor) {
         this.view = view;
@@ -50,6 +51,7 @@ public class DetailPresenter implements DetailContract.Presenter, DetailContract
     @Override
     public void saveDetail() {
         if (task.getId() == 0) {
+            task.setCategoryId(Integer.parseInt(category[0]));
             interactor.save(this, task);
         } else {
             interactor.update(this, task);
@@ -58,11 +60,16 @@ public class DetailPresenter implements DetailContract.Presenter, DetailContract
 
     @Override
     public void onSaveFinished() {
-        view.moveToMainList();
+        view.moveToMainList(category);
     }
 
     @Override
     public void onUpdateFinished() {
-        view.moveToMainList();
+        view.moveToMainList(category);
+    }
+
+    @Override
+    public void setCategory(String[] category) {
+        this.category = category;
     }
 }

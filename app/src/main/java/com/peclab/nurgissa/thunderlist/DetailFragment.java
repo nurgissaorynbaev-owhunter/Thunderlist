@@ -29,6 +29,7 @@ import java.util.Calendar;
 
 public class DetailFragment extends Fragment implements DetailContract.View {
     public static final String EXTRA_VALUE = "value";
+    public static final String EXTRA_CATEGORY = "category";
     private DetailContract.Presenter presenter;
     private EditText edtTitle;
     private EditText edtNote;
@@ -36,9 +37,10 @@ public class DetailFragment extends Fragment implements DetailContract.View {
     private CheckBox chbCompleted;
     private ImageView imvReminder;
     private Listener contextListener;
+    private AppCompatActivity appCompatActivity;
 
     interface Listener {
-        void showMainList();
+        void showMainList(String[] category);
     }
 
     public DetailFragment() {
@@ -61,7 +63,7 @@ public class DetailFragment extends Fragment implements DetailContract.View {
         chbCompleted = view.findViewById(R.id.chb_detail_completed);
         imvReminder = view.findViewById(R.id.imv_detail_reminder);
 
-        presenter = new DetailPresenter(this, new DetailInteractor());
+        presenter = new DetailPresenter(this, new DetailInteractor(DatabaseHelper.getInstance(getContext())));
 
         initToolbar(view);
         handleEditTextTitle();
@@ -73,9 +75,9 @@ public class DetailFragment extends Fragment implements DetailContract.View {
 
     private void initToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.tlb_detail);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        appCompatActivity = (AppCompatActivity) getActivity();
+        appCompatActivity.setSupportActionBar(toolbar);
+        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setHasOptionsMenu(true);
     }
 
@@ -104,8 +106,14 @@ public class DetailFragment extends Fragment implements DetailContract.View {
     private void handleEditTextTitle() {
         if (getArguments() != null) {
             String title = getArguments().getString(EXTRA_VALUE);
-            if (title != null)
+            String[] category = getArguments().getStringArray(EXTRA_CATEGORY);
+            if (category != null) {
+                presenter.setCategory(category);
+            }
+            if (title != null) {
                 presenter.initDetailFromDatabase(title);
+                getArguments().remove(EXTRA_VALUE);
+            }
         }
 
         edtTitle.addTextChangedListener(new TextWatcher() {
@@ -204,7 +212,7 @@ public class DetailFragment extends Fragment implements DetailContract.View {
     }
 
     @Override
-    public void moveToMainList() {
-        contextListener.showMainList();
+    public void moveToMainList(String[] category) {
+        contextListener.showMainList(category);
     }
 }

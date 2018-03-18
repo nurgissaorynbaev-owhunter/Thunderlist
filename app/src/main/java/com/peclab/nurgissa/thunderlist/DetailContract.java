@@ -4,7 +4,7 @@ package com.peclab.nurgissa.thunderlist;
 public interface DetailContract {
 
     interface View {
-        void moveToMainList();
+        void moveToMainList(String[] category);
         void initDetailTitle(String title);
         void initDetailReminder(String reminder);
         void initDetailNote(String note);
@@ -17,6 +17,7 @@ public interface DetailContract {
         void saveDetail();
         void addReminderDate(String date);
         void addReminderTime(String time);
+        void setCategory(String[] category);
     }
 
     interface Interactor {

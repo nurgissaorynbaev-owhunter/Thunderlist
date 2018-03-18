@@ -87,11 +87,12 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
     }
 
     @Override
-    public void onItemClick(String value) {
+    public void onItemClick(String value, String[] category) {
         DetailFragment detailFragment = new DetailFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(DetailFragment.EXTRA_VALUE, value);
+        bundle.putStringArray(DetailFragment.EXTRA_CATEGORY, category);
 
         detailFragment.setArguments(bundle);
 
@@ -104,8 +105,12 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
     }
 
     @Override
-    public void onClickFAB() {
+    public void onClickFAB(String[] category) {
         DetailFragment detailFragment = new DetailFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putStringArray(DetailFragment.EXTRA_CATEGORY, category);
+        detailFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment_container, detailFragment);
@@ -159,13 +164,38 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
     }
 
     @Override
-    public void showMainList() {
+    public void showMainList(String[] category) {
         TaskListFragment listFragment = new TaskListFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putStringArray(TaskListFragment.EXTRA_CATEGORY, category);
+        listFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment_container, listFragment);
         transaction.addToBackStack(null);
 
         transaction.commit();
+    }
+
+    @Override
+    public void deliverCategory(String[] category) {
+        TaskListFragment listFragment = new TaskListFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putStringArray(TaskListFragment.EXTRA_CATEGORY, category);
+
+        listFragment.setArguments(bundle);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.main_fragment_container, listFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
     }
 }

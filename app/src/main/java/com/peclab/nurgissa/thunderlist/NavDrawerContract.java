@@ -9,6 +9,7 @@ public interface NavDrawerContract {
         void createNewItemCategory(int position);
         void notifyItemCategoryAdded(int position);
         void notifyCategoryDataChanged();
+        void deliverCategory(String[] category);
     }
 
     interface AdapterView {

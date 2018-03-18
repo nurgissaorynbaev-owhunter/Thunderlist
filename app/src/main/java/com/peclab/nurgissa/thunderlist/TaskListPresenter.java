@@ -9,14 +9,19 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
     private TaskListContract.Interactor interactor;
     private List<Task> tasks;
     private TaskListContract.AdapterView adapterView;
+    private String[] category;
 
 
     public TaskListPresenter(TaskListContract.View view, TaskListContract.Interactor interactor) {
         this.tasks = new ArrayList<>();
         this.view = view;
         this.interactor = interactor;
+    }
 
-        getAll();
+    @Override
+    public void initializeListByCategory(String[] category) {
+        this.category = category;
+        interactor.getAllByCategoryId(Integer.parseInt(category[0]), this);
     }
 
     private void getAll() {
@@ -33,9 +38,10 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
     }
 
     @Override
-    public void addQuickTask(String value) {
+    public void addQuickTask(int categoryId, String value) {
         Task task = new Task();
         task.setTitle(value);
+        task.setCategoryId(categoryId);
 
         Task result = interactor.create(task, this);
         tasks.add(0, result);
@@ -65,5 +71,18 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
 
     @Override
     public void onCreateFinished() {
+    }
+
+    @Override
+    public void onGetAllByCategoryFinished(List<Task> tasks) {
+        view.setToolbarName(category[1]);
+
+        this.tasks = tasks;
+        view.notifyListDataChanged();
+    }
+
+    @Override
+    public String[] getCategory() {
+        return category;
     }
 }

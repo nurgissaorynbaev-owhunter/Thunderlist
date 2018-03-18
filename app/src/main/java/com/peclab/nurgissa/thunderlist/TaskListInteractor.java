@@ -12,6 +12,7 @@ public class TaskListInteractor implements TaskListContract.Interactor {
     private static final String TABLE_NAME = "Task";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_TITLE = "title";
+    private static final String COLUMN_CATEGORY_ID = "category_id";
 
     private DatabaseHelper databaseHelper;
 
@@ -22,10 +23,12 @@ public class TaskListInteractor implements TaskListContract.Interactor {
     @Override
     public Task create(Task task, OnFinishedListener listener) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
+        ContentValues contentValues = new ContentValues();
 
-        values.put(COLUMN_TITLE, task.getTitle());
-        db.insert(TABLE_NAME, null, values);
+        contentValues.put(COLUMN_TITLE, task.getTitle());
+        contentValues.put(COLUMN_CATEGORY_ID, task.getCategoryId());
+
+        db.insert(TABLE_NAME, null, contentValues);
 
         db.close();
 
@@ -48,6 +51,8 @@ public class TaskListInteractor implements TaskListContract.Interactor {
 
         return task;
     }
+
+
 
     @Override
     public List<Task> getAll() {
@@ -72,6 +77,35 @@ public class TaskListInteractor implements TaskListContract.Interactor {
                 cursor.moveToNext();
             }
         }
+        cursor.close();
+        db.close();
+
+        return tasks;
+    }
+
+    @Override
+    public List<Task> getAllByCategoryId(int categoryId, OnFinishedListener onFinishedListener) {
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        List<Task> tasks = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery("Select * From Task Where category_id=?", new String[]{String.valueOf(categoryId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = new Task();
+                int taskId = Integer.parseInt(cursor.getString(0));
+                String title = cursor.getString(1);
+
+                task.setId(taskId);
+                task.setTitle(title);
+
+                tasks.add(task);
+
+            } while (cursor.moveToNext());
+        }
+
+        onFinishedListener.onGetAllByCategoryFinished(tasks);
+
         cursor.close();
         db.close();
 
