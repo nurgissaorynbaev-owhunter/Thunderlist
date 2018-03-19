@@ -1,6 +1,8 @@
 package com.peclab.nurgissa.thunderlist;
 
 import android.content.DialogInterface;
+import android.content.res.Configuration;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -18,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements TaskListFragment.Listener, NavDrawerContract.View, DetailFragment.Listener {
+public class MainActivity extends AppCompatActivity implements  ListFragment.Listener, NavDrawerContract.View, DetailFragment.Listener {
     private DrawerLayout drawerLayout;
     private NavDrawerPresenter presenter;
     private NavDrawerRecyclerViewAdapter adapter;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         RecyclerView recyclerView = findViewById(R.id.nav_recycler_view);
+        drawerLayout = findViewById(R.id.drawer_layout);
 
         initializeDatabase();
 
@@ -37,12 +41,12 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
 
         initializeNavDrawerDefaultCategory();
 
-        bindDrawerToggleToNavigation();
+        refreshDrawerLayout();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        TaskListFragment fragment = new TaskListFragment();
+        ListFragment fragment = new ListFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.main_fragment_container, fragment);
         transaction.addToBackStack(null);
@@ -52,14 +56,6 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
 
     private void initializeDatabase() {
         databaseHelper = DatabaseHelper.getInstance(this);
-    }
-
-    private void bindDrawerToggleToNavigation() {
-        drawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open_drawer, R.string.nav_close_drawer);
-
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
     }
 
     private void initializeNavDrawerDefaultCategory() {
@@ -165,10 +161,10 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
 
     @Override
     public void showMainList(String[] category) {
-        TaskListFragment listFragment = new TaskListFragment();
+        ListFragment listFragment = new ListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArray(TaskListFragment.EXTRA_CATEGORY, category);
+        bundle.putStringArray(ListFragment.EXTRA_CATEGORY, category);
         listFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -180,10 +176,10 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
 
     @Override
     public void deliverCategory(String[] category) {
-        TaskListFragment listFragment = new TaskListFragment();
+        ListFragment listFragment = new ListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArray(TaskListFragment.EXTRA_CATEGORY, category);
+        bundle.putStringArray(ListFragment.EXTRA_CATEGORY, category);
 
         listFragment.setArguments(bundle);
 
@@ -197,5 +193,30 @@ public class MainActivity extends AppCompatActivity implements TaskListFragment.
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
+    }
+
+    private void refreshDrawerLayout() {
+
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if (slideOffset == 1) {
+                    presenter.doesCategoriesExist();
+                }
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+            }
+        });
     }
 }

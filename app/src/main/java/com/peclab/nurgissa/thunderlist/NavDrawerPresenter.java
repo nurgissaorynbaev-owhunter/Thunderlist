@@ -57,24 +57,12 @@ public class NavDrawerPresenter implements NavDrawerContract.Presenter {
     public void onItemCategoryClicked(int adapterPosition) {
         Category category = categories.get(adapterPosition);
 
-        String[] array = new String[] {String.valueOf(category.getId()), category.getName()};
+        String[] array = new String[]{String.valueOf(category.getId()), category.getName()};
 
-        switch (category.getName()) {
-            case "Inbox":
-                view.deliverCategory(array);
-                break;
-            case "Groceries":
-                view.deliverCategory(array);
-                break;
-            case "Work":
-                view.deliverCategory(array);
-                break;
-            case "Completed":
-                view.deliverCategory(array);
-                break;
-            case "Add category":
-                view.createNewItemCategory(adapterPosition);
-                break;
+        if (category.getName().equals("Add category")) {
+            view.createNewItemCategory(adapterPosition);
+        } else {
+            view.deliverCategory(array);
         }
     }
 }

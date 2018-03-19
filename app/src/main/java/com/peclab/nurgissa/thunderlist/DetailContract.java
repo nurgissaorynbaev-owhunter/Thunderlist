@@ -8,6 +8,7 @@ public interface DetailContract {
         void initDetailTitle(String title);
         void initDetailReminder(String reminder);
         void initDetailNote(String note);
+        void setToolbarTitle(String value);
     }
 
     interface Presenter {

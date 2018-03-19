@@ -71,5 +71,6 @@ public class DetailPresenter implements DetailContract.Presenter, DetailContract
     @Override
     public void setCategory(String[] category) {
         this.category = category;
+        view.setToolbarTitle(category[1]);
     }
 }

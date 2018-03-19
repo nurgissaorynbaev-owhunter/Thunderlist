@@ -82,6 +82,11 @@ public class DetailFragment extends Fragment implements DetailContract.View {
     }
 
     @Override
+    public void setToolbarTitle(String value) {
+        appCompatActivity.getSupportActionBar().setTitle(value);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_detail, menu);
         super.onCreateOptionsMenu(menu, inflater);

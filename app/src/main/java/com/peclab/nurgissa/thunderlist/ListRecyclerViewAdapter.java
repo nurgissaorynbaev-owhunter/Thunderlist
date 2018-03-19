@@ -9,14 +9,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRecyclerViewAdapter.ViewHolder> {
-    private TaskListContract.Presenter presenter;
+public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerViewAdapter.ViewHolder> {
+    private ListContract.Presenter presenter;
 
-    public TaskListRecyclerViewAdapter(TaskListContract.Presenter presenter) {
+    public ListRecyclerViewAdapter(ListContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements TaskListContract.AdapterView, View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements ListContract.AdapterView, View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
         private TextView tevTitle;
         private CheckBox chbStatus;
 

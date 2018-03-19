@@ -5,12 +5,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -18,22 +23,25 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class TaskListFragment extends Fragment implements TaskListContract.View {
+public class ListFragment extends Fragment implements ListContract.View {
     public static final String EXTRA_CATEGORY = "categoryName";
     private EditText edtQuickTask;
-    private TaskListContract.Presenter presenter;
-    private TaskListRecyclerViewAdapter adapter;
+    private ListContract.Presenter presenter;
+    private ListRecyclerViewAdapter adapter;
     private Listener contextListener;
     private FloatingActionButton fab;
     private AppCompatActivity appCompatActivity;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
     private int categoryId;
 
     interface Listener {
         void onItemClick(String value, String[] category);
+
         void onClickFAB(String[] category);
     }
 
-    public TaskListFragment() {
+    public ListFragment() {
         // Required empty public constructor
     }
 
@@ -47,10 +55,10 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new TaskListPresenter(this, new TaskListInteractor(DatabaseHelper.getInstance(getActivity())));
-        adapter = new TaskListRecyclerViewAdapter(presenter);
+        presenter = new ListPresenter(this, new ListInteractor(DatabaseHelper.getInstance(getActivity())));
+        adapter = new ListRecyclerViewAdapter(presenter);
 
-        final View view = inflater.inflate(R.layout.fragment_list_task, container, false);
+        final View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         setToolbar(view);
 
@@ -72,6 +80,26 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
         Toolbar toolbar = view.findViewById(R.id.tlb_list);
         appCompatActivity = (AppCompatActivity) getActivity();
         appCompatActivity.setSupportActionBar(toolbar);
+
+        drawerLayout = appCompatActivity.findViewById(R.id.drawer_layout);
+        drawerToggle = new ActionBarDrawerToggle(appCompatActivity, drawerLayout, R.string.nav_open_drawer, R.string.nav_close_drawer);
+        drawerLayout.addDrawerListener(drawerToggle);
+
+        setHasOptionsMenu(true);
+        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        appCompatActivity.getSupportActionBar().setHomeButtonEnabled(true);
+        appCompatActivity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_dehaze_white_24dp);
+
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void initializeListByCategory() {
@@ -85,7 +113,7 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
             }
         } else {
             categoryId = 1;
-            String[] inboxCategory = new String[] {"1", "Inbox"};
+            String[] inboxCategory = new String[]{"1", "Inbox"};
             presenter.initializeListByCategory(inboxCategory);
         }
     }

@@ -4,15 +4,15 @@ package com.peclab.nurgissa.thunderlist;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskListPresenter implements TaskListContract.Presenter, TaskListContract.Interactor.OnFinishedListener {
-    private TaskListContract.View view;
-    private TaskListContract.Interactor interactor;
+public class ListPresenter implements ListContract.Presenter, ListContract.Interactor.OnFinishedListener {
+    private ListContract.View view;
+    private ListContract.Interactor interactor;
     private List<Task> tasks;
-    private TaskListContract.AdapterView adapterView;
+    private ListContract.AdapterView adapterView;
     private String[] category;
 
 
-    public TaskListPresenter(TaskListContract.View view, TaskListContract.Interactor interactor) {
+    public ListPresenter(ListContract.View view, ListContract.Interactor interactor) {
         this.tasks = new ArrayList<>();
         this.view = view;
         this.interactor = interactor;
@@ -30,7 +30,7 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
     }
 
     @Override
-    public void bindAdapterViewToValue(TaskListContract.AdapterView adapterView, int position) {
+    public void bindAdapterViewToValue(ListContract.AdapterView adapterView, int position) {
         this.adapterView = adapterView;
 
         adapterView.setTitle(tasks.get(position).getTitle());
@@ -52,7 +52,10 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
     @Override
     public void checkStatusChanged(boolean value, int position) {
         if (value) {
-            tasks.remove(position);
+            Task task = tasks.get(position);
+            interactor.delete(task);
+            tasks.remove(task);
+
             adapterView.setChecked(false);
 
             view.notifyDataRemovedFromTaskList(position);
@@ -74,7 +77,7 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
     }
 
     @Override
-    public void onGetAllByCategoryFinished(List<Task> tasks) {
+    public void onGetAllByCategoryIdFinished(List<Task> tasks) {
         view.setToolbarName(category[1]);
 
         this.tasks = tasks;

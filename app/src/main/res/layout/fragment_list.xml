@@ -3,6 +3,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/toolbar_main"
+        android:id="@+id/tlb_list"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_task_list"
         android:layout_weight="1"
