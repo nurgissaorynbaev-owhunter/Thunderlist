@@ -27,6 +27,9 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
 
         if (task.getNote() != null)
             view.initDetailNote(task.getNote());
+
+        if (task.getCreatedTime() != null)
+            view.initDetailCreatedTime(task.getCreatedTime());
     }
 
     @Override
@@ -112,5 +115,10 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
             }
         }
         task.setCategoryId(Integer.parseInt(category[0]));
+    }
+
+    @Override
+    public void setCreatedTime(String value) {
+        task.setCreatedTime(value);
     }
 }

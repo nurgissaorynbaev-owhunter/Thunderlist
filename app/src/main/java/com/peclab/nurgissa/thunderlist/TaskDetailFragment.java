@@ -20,13 +20,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
@@ -38,7 +38,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     private EditText edtNote;
     private TextView txvCategory;
     private TextView txvReminder;
-    private CheckBox chbCompleted;
+    private TextView txvCreatedTime;
     private ImageView imvReminder;
     private ImageView imvCategory;
     private Listener contextListener;
@@ -66,9 +66,9 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         edtNote = view.findViewById(R.id.edt_detail_note);
         txvCategory = view.findViewById(R.id.txv_detail_category);
         txvReminder = view.findViewById(R.id.txv_detail_reminder);
-        chbCompleted = view.findViewById(R.id.chb_detail_completed);
         imvReminder = view.findViewById(R.id.imv_detail_reminder);
         imvCategory = view.findViewById(R.id.imv_detail_category);
+        txvCreatedTime = view.findViewById(R.id.txv_detail_created_time);
 
         presenter = new TaskDetailPresenter(this, new TaskDetailInteractor(DatabaseHelper.getInstance(getContext())));
 
@@ -108,6 +108,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
                 return true;
 
             case R.id.menu_item_accept_action:
+                handleTextViewCreatedTime();
                 presenter.saveDetail();
                 return true;
 
@@ -189,8 +190,10 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
                 builder.setSingleChoiceItems(categoryName, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        presenter.setSelectedCategory(categoryName[which]);
-                        txvCategory.setText(categoryName[which]);
+                        String selectedCategoryName = categoryName[which];
+                        presenter.setSelectedCategory(selectedCategoryName);
+                        setToolbarTitle(selectedCategoryName);
+                        txvCategory.setText(selectedCategoryName);
                         imvCategory.setColorFilter(ContextCompat.getColor(getContext(), R.color.dark_green));
                         dialog.dismiss();
                     }
@@ -238,6 +241,12 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         timePickerDialog.show();
     }
 
+    private void handleTextViewCreatedTime() {
+        String dateTime = new SimpleDateFormat("EEEE, dd MMM @ HH:mm").format(Calendar.getInstance().getTime());
+        presenter.setCreatedTime(dateTime);
+        txvCreatedTime.setText(dateTime);
+    }
+
     @Override
     public void initDetailTitle(String title) {
         edtTitle.setText(title);
@@ -252,6 +261,11 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     @Override
     public void initDetailNote(String note) {
         edtNote.setText(note);
+    }
+
+    @Override
+    public void initDetailCreatedTime(String value) {
+        txvCreatedTime.setText(value);
     }
 
     @Override

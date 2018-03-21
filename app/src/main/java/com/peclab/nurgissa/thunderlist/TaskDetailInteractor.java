@@ -15,6 +15,7 @@ public class TaskDetailInteractor implements TaskDetailContract.Interactor {
     private static final String COLUMN_REMINDER_DATE = "reminder_date";
     private static final String COLUMN_REMINDER_TIME = "reminder_time";
     private static final String COLUMN_NOTE = "note";
+    private static final String COLUMN_CREATED_TIME = "created_time";
     private static final String COLUMN_CATEGORY_ID = "category_id";
     private static final String CATEGORY_COLUMN_TASK_COUNT = "task_count";
     private static final String TABLE_NAME_CATEGORY = "TaskCategory";
@@ -35,6 +36,7 @@ public class TaskDetailInteractor implements TaskDetailContract.Interactor {
         contentValues.put(COLUMN_REMINDER_TIME, task.getReminderTime());
         contentValues.put(COLUMN_NOTE, task.getNote());
         contentValues.put(COLUMN_CATEGORY_ID, task.getCategoryId());
+        contentValues.put(COLUMN_CREATED_TIME, task.getCreatedTime());
 
         db.insert(TABLE_NAME_TASK, null, contentValues);
         db.close();
@@ -56,7 +58,7 @@ public class TaskDetailInteractor implements TaskDetailContract.Interactor {
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
         Task task = new Task();
 
-        Cursor cursor = db.query(TABLE_NAME_TASK, new String[]{COLUMN_ID, COLUMN_TITLE, COLUMN_REMINDER_DATE, COLUMN_REMINDER_TIME, COLUMN_NOTE, COLUMN_CATEGORY_ID}, COLUMN_TITLE + "=?", new String[]{title}, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME_TASK, new String[]{COLUMN_ID, COLUMN_TITLE, COLUMN_REMINDER_DATE, COLUMN_REMINDER_TIME, COLUMN_NOTE, COLUMN_CREATED_TIME, COLUMN_CATEGORY_ID}, COLUMN_TITLE + "=?", new String[]{title}, null, null, null);
 
         if (cursor.moveToFirst()) {
             int id = Integer.parseInt(cursor.getString(0));
@@ -64,13 +66,15 @@ public class TaskDetailInteractor implements TaskDetailContract.Interactor {
             String date = cursor.getString(2);
             String time = cursor.getString(3);
             String note = cursor.getString(4);
-            int category_id = Integer.parseInt(cursor.getString(5));
+            String created_time = cursor.getString(5);
+            int category_id = cursor.getInt(6);
 
             task.setId(id);
             task.setTitle(t);
             task.setReminderDate(date);
             task.setReminderTime(time);
             task.setNote(note);
+            task.setCreatedTime(created_time);
             task.setCategoryId(category_id);
         }
         cursor.close();
@@ -88,6 +92,7 @@ public class TaskDetailInteractor implements TaskDetailContract.Interactor {
         contentValues.put(COLUMN_REMINDER_DATE, task.getReminderDate());
         contentValues.put(COLUMN_REMINDER_TIME, task.getReminderTime());
         contentValues.put(COLUMN_NOTE, task.getNote());
+        contentValues.put(COLUMN_CREATED_TIME, task.getCreatedTime());
         contentValues.put(COLUMN_CATEGORY_ID, task.getCategoryId());
 
         db.update(TABLE_NAME_TASK, contentValues, COLUMN_ID + "=?", new String[]{String.valueOf(task.getId())});

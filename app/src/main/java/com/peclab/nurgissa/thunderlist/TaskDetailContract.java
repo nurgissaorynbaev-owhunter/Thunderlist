@@ -10,6 +10,7 @@ public interface TaskDetailContract {
         void initDetailTitle(String title);
         void initDetailReminder(String reminder);
         void initDetailNote(String note);
+        void initDetailCreatedTime(String value);
         void setToolbarTitle(String value);
     }
 
@@ -25,6 +26,7 @@ public interface TaskDetailContract {
         void deleteTask();
         String[] getAllCategoryName();
         void setSelectedCategory(String value);
+        void setCreatedTime(String value);
     }
 
     interface Interactor {

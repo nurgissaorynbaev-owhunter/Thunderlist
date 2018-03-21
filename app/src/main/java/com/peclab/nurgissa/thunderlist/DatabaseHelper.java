@@ -29,6 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "reminder_date text, " +
                 "reminder_time text, " +
                 "note text, " +
+                "created_time text, " +
                 "category_id integer, foreign key(category_id) references TaskCategory(_id));");
 
         db.execSQL("Create table TaskCategory (" +
