@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryInteractor implements NavDrawerContract.Interactor {
-    private static final String TABLE_NAME = "Category";
+public class TaskCategoryInteractor implements TaskCategoryContract.Interactor {
+    private static final String TABLE_NAME = "TaskCategory";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_COUNT = "task_count";
@@ -18,15 +18,15 @@ public class CategoryInteractor implements NavDrawerContract.Interactor {
 
     private DatabaseHelper databaseHelper;
 
-    public CategoryInteractor(DatabaseHelper databaseHelper) {
+    public TaskCategoryInteractor(DatabaseHelper databaseHelper) {
         this.databaseHelper = databaseHelper;
     }
 
     @Override
-    public void initDefaultCategory(List<Category> categories) {
+    public void initDefaultCategory(List<TaskCategory> categories) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        for (Category c : categories) {
+        for (TaskCategory c : categories) {
             ContentValues contentValues = new ContentValues();
 
             contentValues.put(COLUMN_NAME, c.getName());
@@ -40,38 +40,38 @@ public class CategoryInteractor implements NavDrawerContract.Interactor {
     }
 
     @Override
-    public void add(Category category) {
+    public void add(TaskCategory taskCategory) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COLUMN_NAME, category.getName());
-        contentValues.put(COLUMN_IMAGE, category.getImage());
-        contentValues.put(COLUMN_IMAGE_COLOR, category.getImageColor());
-        contentValues.put(COLUMN_COUNT, category.getTaskCount());
+        contentValues.put(COLUMN_NAME, taskCategory.getName());
+        contentValues.put(COLUMN_IMAGE, taskCategory.getImage());
+        contentValues.put(COLUMN_IMAGE_COLOR, taskCategory.getImageColor());
+        contentValues.put(COLUMN_COUNT, taskCategory.getTaskCount());
 
         db.insert(TABLE_NAME, null, contentValues);
         db.close();
     }
 
     @Override
-    public List<Category> getAll() {
+    public List<TaskCategory> getAll() {
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
-        List<Category> categories = new ArrayList<>();
+        List<TaskCategory> categories = new ArrayList<>();
 
         Cursor cursor = db.rawQuery("Select * From " + TABLE_NAME, null);
 
         if (cursor.moveToFirst()) {
 
             do {
-                Category category = new Category();
+                TaskCategory taskCategory = new TaskCategory();
 
-                category.setId(Integer.parseInt(cursor.getString(0)));
-                category.setName(cursor.getString(1));
-                category.setImage(Integer.parseInt(cursor.getString(2)));
-                category.setImageColor(Integer.parseInt(cursor.getString(3)));
-                category.setTaskCount(Integer.parseInt(cursor.getString(4)));
+                taskCategory.setId(Integer.parseInt(cursor.getString(0)));
+                taskCategory.setName(cursor.getString(1));
+                taskCategory.setImage(Integer.parseInt(cursor.getString(2)));
+                taskCategory.setImageColor(Integer.parseInt(cursor.getString(3)));
+                taskCategory.setTaskCount(Integer.parseInt(cursor.getString(4)));
 
-                categories.add(category);
+                categories.add(taskCategory);
 
             } while (cursor.moveToNext());
         }

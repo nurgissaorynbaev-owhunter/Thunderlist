@@ -1,12 +1,9 @@
 package com.peclab.nurgissa.thunderlist;
 
 import android.content.DialogInterface;
-import android.content.res.Configuration;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,10 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements  ListFragment.Listener, NavDrawerContract.View, DetailFragment.Listener {
+public class MainActivity extends AppCompatActivity implements  TaskListFragment.Listener, TaskCategoryContract.View, TaskDetailFragment.Listener {
     private DrawerLayout drawerLayout;
-    private NavDrawerPresenter presenter;
-    private NavDrawerRecyclerViewAdapter adapter;
+    private TaskCategoryPresenter presenter;
+    private TaskCategoryRecyclerViewAdapter adapter;
     private DatabaseHelper databaseHelper;
 
     @Override
@@ -36,8 +33,8 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.Lis
 
         initializeDatabase();
 
-        presenter = new NavDrawerPresenter(this, new CategoryInteractor(databaseHelper));
-        adapter = new NavDrawerRecyclerViewAdapter(this, presenter);
+        presenter = new TaskCategoryPresenter(this, new TaskCategoryInteractor(databaseHelper));
+        adapter = new TaskCategoryRecyclerViewAdapter(this, presenter);
 
         initializeNavDrawerDefaultCategory();
 
@@ -46,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.Lis
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        ListFragment fragment = new ListFragment();
+        TaskListFragment fragment = new TaskListFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.main_fragment_container, fragment);
         transaction.addToBackStack(null);
@@ -61,12 +58,12 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.Lis
     private void initializeNavDrawerDefaultCategory() {
         if (!presenter.doesCategoriesExist()) {
 
-            List<Category> categories = new ArrayList<>();
-            categories.add(new Category("Inbox", R.drawable.ic_inbox_black_24dp, R.color.light_blue));
-            categories.add(new Category("Groceries", R.drawable.ic_shopping_cart_black_24dp, R.color.light_violet));
-            categories.add(new Category("Work", R.drawable.ic_work_black_24dp, R.color.dark_orange));
-            categories.add(new Category("Completed", R.drawable.ic_done_all_black_24dp, R.color.dark_green));
-            categories.add(new Category("Add category", R.drawable.ic_add_white_24dp, R.color.light_gray));
+            List<TaskCategory> categories = new ArrayList<>();
+            categories.add(new TaskCategory("Inbox", R.drawable.ic_inbox_black_24dp, R.color.light_blue));
+            categories.add(new TaskCategory("Groceries", R.drawable.ic_shopping_cart_black_24dp, R.color.light_violet));
+            categories.add(new TaskCategory("Work", R.drawable.ic_work_black_24dp, R.color.dark_orange));
+            categories.add(new TaskCategory("Completed", R.drawable.ic_done_all_black_24dp, R.color.dark_green));
+            categories.add(new TaskCategory("Add category", R.drawable.ic_add_white_24dp, R.color.light_gray));
 
             presenter.initDefaultCategories(categories);
         }
@@ -84,17 +81,17 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.Lis
 
     @Override
     public void onItemClick(String value, String[] category) {
-        DetailFragment detailFragment = new DetailFragment();
+        TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(DetailFragment.EXTRA_VALUE, value);
-        bundle.putStringArray(DetailFragment.EXTRA_CATEGORY, category);
+        bundle.putString(TaskDetailFragment.EXTRA_VALUE, value);
+        bundle.putStringArray(TaskDetailFragment.EXTRA_CATEGORY, category);
 
-        detailFragment.setArguments(bundle);
+        taskDetailFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.main_fragment_container, detailFragment);
+        transaction.replace(R.id.main_fragment_container, taskDetailFragment);
         transaction.addToBackStack(null);
 
         transaction.commit();
@@ -102,14 +99,14 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.Lis
 
     @Override
     public void onClickFAB(String[] category) {
-        DetailFragment detailFragment = new DetailFragment();
+        TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArray(DetailFragment.EXTRA_CATEGORY, category);
-        detailFragment.setArguments(bundle);
+        bundle.putStringArray(TaskDetailFragment.EXTRA_CATEGORY, category);
+        taskDetailFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment_container, detailFragment);
+        transaction.replace(R.id.main_fragment_container, taskDetailFragment);
         transaction.addToBackStack(null);
 
         transaction.commit();
@@ -132,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.Lis
                 int image = R.drawable.ic_format_list_bulleted_black_24dp;
                 int imageColor = R.color.dark_gray;
 
-                presenter.addNavDrawerCategory(new Category(categoryName, image, imageColor), position);
+                presenter.addNavDrawerCategory(new TaskCategory(categoryName, image, imageColor), position);
                 imm.hideSoftInputFromWindow(edtInput.getWindowToken(), 0);
             }
         });
@@ -161,14 +158,14 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.Lis
 
     @Override
     public void showMainList(String[] category) {
-        ListFragment listFragment = new ListFragment();
+        TaskListFragment taskListFragment = new TaskListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArray(ListFragment.EXTRA_CATEGORY, category);
-        listFragment.setArguments(bundle);
+        bundle.putStringArray(TaskListFragment.EXTRA_CATEGORY, category);
+        taskListFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment_container, listFragment);
+        transaction.replace(R.id.main_fragment_container, taskListFragment);
         transaction.addToBackStack(null);
 
         transaction.commit();
@@ -176,16 +173,16 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.Lis
 
     @Override
     public void deliverCategory(String[] category) {
-        ListFragment listFragment = new ListFragment();
+        TaskListFragment taskListFragment = new TaskListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArray(ListFragment.EXTRA_CATEGORY, category);
+        bundle.putStringArray(TaskListFragment.EXTRA_CATEGORY, category);
 
-        listFragment.setArguments(bundle);
+        taskListFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.main_fragment_container, listFragment);
+        transaction.replace(R.id.main_fragment_container, taskListFragment);
         transaction.addToBackStack(null);
 
         transaction.commit();

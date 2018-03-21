@@ -8,17 +8,17 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListInteractor implements ListContract.Interactor {
+public class TaskListInteractor implements TaskListContract.Interactor {
     private static final String TABLE_NAME_TASK = "Task";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_TITLE = "title";
     private static final String COLUMN_CATEGORY_ID = "category_id";
     private static final String CATEGORY_COLUMN_TASK_COUNT = "task_count";
-    private static final String TABLE_NAME_CATEGORY = "Category";
+    private static final String TABLE_NAME_CATEGORY = "TaskCategory";
 
     private DatabaseHelper databaseHelper;
 
-    public ListInteractor(DatabaseHelper databaseHelper) {
+    public TaskListInteractor(DatabaseHelper databaseHelper) {
         this.databaseHelper = databaseHelper;
     }
 
@@ -122,11 +122,26 @@ public class ListInteractor implements ListContract.Interactor {
     }
 
     @Override
-    public void delete(Task task) {
+    public void moveToCompleteCategory(Task task) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         db.execSQL("Update " + TABLE_NAME_TASK + " Set " + COLUMN_CATEGORY_ID + "=" + "4" + " Where " + COLUMN_ID + "=?", new String[] {String.valueOf(task.getId())});
+
+        db.close();
+
+        decreaseLastCategoryByOne(task);
+        increaseNewCategoryToONe(task);
+    }
+
+    private void decreaseLastCategoryByOne(Task task) {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.execSQL("Update " + TABLE_NAME_CATEGORY + " Set " + CATEGORY_COLUMN_TASK_COUNT + "=" + CATEGORY_COLUMN_TASK_COUNT + "-1" + " Where " + COLUMN_ID + "=?", new String[] {String.valueOf(task.getCategoryId())});
+
+        db.close();
+    }
+
+    private void increaseNewCategoryToONe(Task task) {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.execSQL("Update " + TABLE_NAME_CATEGORY + " Set " + CATEGORY_COLUMN_TASK_COUNT + "=" + CATEGORY_COLUMN_TASK_COUNT + "+1" + " Where " + COLUMN_ID + "=?", new String[] {String.valueOf(4)});
 
         db.close();

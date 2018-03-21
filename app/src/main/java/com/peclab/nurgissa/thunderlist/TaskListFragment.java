@@ -5,8 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,11 +21,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class ListFragment extends Fragment implements ListContract.View {
+public class TaskListFragment extends Fragment implements TaskListContract.View {
     public static final String EXTRA_CATEGORY = "categoryName";
     private EditText edtQuickTask;
-    private ListContract.Presenter presenter;
-    private ListRecyclerViewAdapter adapter;
+    private TaskListContract.Presenter presenter;
+    private TaskListRecyclerViewAdapter adapter;
     private Listener contextListener;
     private FloatingActionButton fab;
     private AppCompatActivity appCompatActivity;
@@ -41,7 +39,7 @@ public class ListFragment extends Fragment implements ListContract.View {
         void onClickFAB(String[] category);
     }
 
-    public ListFragment() {
+    public TaskListFragment() {
         // Required empty public constructor
     }
 
@@ -55,8 +53,8 @@ public class ListFragment extends Fragment implements ListContract.View {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new ListPresenter(this, new ListInteractor(DatabaseHelper.getInstance(getActivity())));
-        adapter = new ListRecyclerViewAdapter(presenter);
+        presenter = new TaskListPresenter(this, new TaskListInteractor(DatabaseHelper.getInstance(getActivity())));
+        adapter = new TaskListRecyclerViewAdapter(presenter);
 
         final View view = inflater.inflate(R.layout.fragment_list, container, false);
 

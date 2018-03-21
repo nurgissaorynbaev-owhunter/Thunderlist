@@ -10,16 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-public class NavDrawerRecyclerViewAdapter extends RecyclerView.Adapter<NavDrawerRecyclerViewAdapter.ViewHolder> {
+public class TaskCategoryRecyclerViewAdapter extends RecyclerView.Adapter<TaskCategoryRecyclerViewAdapter.ViewHolder> {
     private MainActivity activity;
-    private NavDrawerPresenter presenter;
+    private TaskCategoryPresenter presenter;
 
-    public NavDrawerRecyclerViewAdapter(MainActivity activity, NavDrawerPresenter presenter) {
+    public TaskCategoryRecyclerViewAdapter(MainActivity activity, TaskCategoryPresenter presenter) {
         this.activity = activity;
         this.presenter = presenter;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements NavDrawerContract.AdapterView, View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements TaskCategoryContract.AdapterView, View.OnClickListener {
         private ImageView imageView;
         private TextView textViewTitle;
         private TextView textViewCount;

@@ -29,9 +29,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "reminder_date text, " +
                 "reminder_time text, " +
                 "note text, " +
-                "category_id integer, foreign key(category_id) references Category(_id));");
+                "category_id integer, foreign key(category_id) references TaskCategory(_id));");
 
-        db.execSQL("Create table Category (" +
+        db.execSQL("Create table TaskCategory (" +
                 "_id integer primary key autoincrement, " +
                 "name text, " +
                 "image int, " +
@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("Drop table if exists " + "Task");
-        db.execSQL("Drop table if exists " + "Category");
+        db.execSQL("Drop table if exists " + "TaskCategory");
         onCreate(db);
     }
 }

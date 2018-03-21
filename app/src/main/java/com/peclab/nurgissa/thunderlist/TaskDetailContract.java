@@ -6,52 +6,37 @@ import java.util.List;
 public interface TaskDetailContract {
 
     interface View {
-        void notifySubtaskAddedToDetailTask();
-        void notifyDataSetChanged();
-
-        int getColorLightOrange();
-        int getColorLightBlue();
-        int getColorLightGray();
-        int getColorDarkGray();
+        void moveToMainList(String[] category);
+        void initDetailTitle(String title);
+        void initDetailReminder(String reminder);
+        void initDetailNote(String note);
+        void setToolbarTitle(String value);
     }
 
-    interface BasicAdapterView {
-        void setItem(String text, int image, int color, int textColor);
-        void setItemHint(String text, int image, int color);
-    }
-
-    interface SubtaskAdapterView {
-        void setText(String text);
-    }
-
-    interface TaskTitleAdapterView {
-        void setItem(String text, int image, int color, int textColor);
-        void setItemHint(String text, int image, int color);
+    interface Presenter {
+        void initDetailFromDatabase(String title);
+        void addTextTitle(String title);
+        void addTextNote(String note);
+        void saveDetail();
+        void addReminderDate(String date);
+        void addReminderTime(String time);
+        void setCategory(String[] category);
+        Task getTask();
+        void deleteTask();
+        String[] getAllCategoryName();
+        void setSelectedCategory(String value);
     }
 
     interface Interactor {
         interface OnFinishedListener {
-            void onCreateFinished();
+            void onSaveFinished();
+            void onUpdateFinished();
+            void onDeleteFinished();
         }
-        Task create(Task task);
-        Task save(Task task);
-        Task saveById(Task task, int id);
+        void save(OnFinishedListener onFinishedListener, Task task);
+        void update(OnFinishedListener onFinishedListener, Task task);
         Task getByTitle(String title);
-    }
-
-    interface Presenter {
-        void initializeTaskDetail(String value);
-        void addSubtask(String value);
-        void saveTaskDetail();
-        List<TaskDetail> getTaskDetails();
-
-        int getViewType(int position);
-        int getDetailTaskItemCount();
-        void bindTaskTitleViewToValue(TaskTitleAdapterView adapterView, int position);
-        void bindBasicViewToValue(BasicAdapterView adapterView, int position);
-        void bindSubtaskViewToValue(SubtaskAdapterView adapterView, int position);
-
-        void setNoteValue(Task task);
-        void setScheduleValue(String value);
+        void delete(OnFinishedListener onFinishedListener, Task task);
+        List<TaskCategory> getAllCategory();
     }
 }

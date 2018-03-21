@@ -3,7 +3,7 @@ package com.peclab.nurgissa.thunderlist;
 
 import java.util.List;
 
-public interface ListContract {
+public interface TaskListContract {
 
     interface View {
         void notifyDataAddedToTaskList(int position);
@@ -16,7 +16,7 @@ public interface ListContract {
     interface Presenter {
         void addQuickTask(int categoryId, String value);
         int getTasksCount();
-        void bindAdapterViewToValue(ListContract.AdapterView adapterView, int position);
+        void bindAdapterViewToValue(TaskListContract.AdapterView adapterView, int position);
         void checkStatusChanged(boolean isChecked, int position);
         void taskClicked(int position);
         void initializeListByCategory(String[] category);
@@ -38,6 +38,6 @@ public interface ListContract {
         Task get(int id);
         void getAllByCategoryId(int categoryId, OnFinishedListener onFinishedListener);
         List<Task> getAll();
-        void delete(Task task);
+        void moveToCompleteCategory(Task task);
     }
 }

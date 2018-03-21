@@ -3,7 +3,7 @@ package com.peclab.nurgissa.thunderlist;
 
 import java.util.List;
 
-public interface NavDrawerContract {
+public interface TaskCategoryContract {
 
     interface View {
         void createNewItemCategory(int position);
@@ -17,13 +17,13 @@ public interface NavDrawerContract {
     }
 
     interface Presenter {
-        void initDefaultCategories(List<Category> categories);
+        void initDefaultCategories(List<TaskCategory> categories);
         boolean doesCategoriesExist();
     }
 
     interface Interactor {
-        void initDefaultCategory(List<Category> categories);
-        void add(Category category);
-        List<Category> getAll();
+        void initDefaultCategory(List<TaskCategory> categories);
+        void add(TaskCategory taskCategory);
+        List<TaskCategory> getAll();
     }
 }

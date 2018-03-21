@@ -4,15 +4,15 @@ package com.peclab.nurgissa.thunderlist;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListPresenter implements ListContract.Presenter, ListContract.Interactor.OnFinishedListener {
-    private ListContract.View view;
-    private ListContract.Interactor interactor;
+public class TaskListPresenter implements TaskListContract.Presenter, TaskListContract.Interactor.OnFinishedListener {
+    private TaskListContract.View view;
+    private TaskListContract.Interactor interactor;
     private List<Task> tasks;
-    private ListContract.AdapterView adapterView;
+    private TaskListContract.AdapterView adapterView;
     private String[] category;
 
 
-    public ListPresenter(ListContract.View view, ListContract.Interactor interactor) {
+    public TaskListPresenter(TaskListContract.View view, TaskListContract.Interactor interactor) {
         this.tasks = new ArrayList<>();
         this.view = view;
         this.interactor = interactor;
@@ -30,7 +30,7 @@ public class ListPresenter implements ListContract.Presenter, ListContract.Inter
     }
 
     @Override
-    public void bindAdapterViewToValue(ListContract.AdapterView adapterView, int position) {
+    public void bindAdapterViewToValue(TaskListContract.AdapterView adapterView, int position) {
         this.adapterView = adapterView;
 
         adapterView.setTitle(tasks.get(position).getTitle());
@@ -53,7 +53,7 @@ public class ListPresenter implements ListContract.Presenter, ListContract.Inter
     public void checkStatusChanged(boolean value, int position) {
         if (value) {
             Task task = tasks.get(position);
-            interactor.delete(task);
+            interactor.moveToCompleteCategory(task);
             tasks.remove(task);
 
             adapterView.setChecked(false);
