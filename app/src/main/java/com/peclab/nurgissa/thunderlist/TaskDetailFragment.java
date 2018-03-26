@@ -1,11 +1,14 @@
 package com.peclab.nurgissa.thunderlist;
 
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -27,7 +30,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.util.Calendar;
+import java.util.TimeZone;
+
+import static android.content.Context.ALARM_SERVICE;
 
 
 public class TaskDetailFragment extends Fragment implements TaskDetailContract.View {
@@ -45,7 +56,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     private AppCompatActivity appCompatActivity;
 
     interface Listener {
-        void showMainList(String[] category);
+        void showTaskList(String[] category);
     }
 
     public TaskDetailFragment() {
@@ -72,7 +83,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
 
         presenter = new TaskDetailPresenter(this, new TaskDetailInteractor(DatabaseHelper.getInstance(getContext())));
 
-        initToolbar(view);
+        setToolbar(view);
         handleEditTextTitle();
         handleEditTextNote();
         handleTextViewReminder();
@@ -81,7 +92,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         return view;
     }
 
-    private void initToolbar(View view) {
+    private void setToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.tlb_detail);
         appCompatActivity = (AppCompatActivity) getActivity();
         appCompatActivity.setSupportActionBar(toolbar);
@@ -96,7 +107,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_detail, menu);
+        inflater.inflate(R.menu.menu_task_detail, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -142,12 +153,10 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 presenter.addTextTitle(s.toString());
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -209,22 +218,23 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
 
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String date = dayOfMonth + "." + month + "." + year;
+
                 presenter.addReminderDate(date);
 
-                setReminderTime();
+                setReminderTime(year, month, dayOfMonth);
             }
         }, year, month, day);
 
         datePickerDialog.show();
     }
 
-    private void setReminderTime() {
+    private void setReminderTime(final int year, final int month, final int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
 
         final int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -234,6 +244,11 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 String time = hourOfDay + ":" + minute;
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    presenter.setLocalDateTime(LocalDateTime.of(year, month + 1, dayOfMonth, hour, minute));
+                }
+
                 presenter.addReminderTime(time);
             }
         }, hour, minute, false);
@@ -270,7 +285,7 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
 
     @Override
     public void moveToMainList(String[] category) {
-        contextListener.showMainList(category);
+        contextListener.showTaskList(category);
     }
 
     private void shareTask() {
@@ -279,5 +294,25 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
         intent.setType("text/plain");
 
         startActivity(intent);
+    }
+
+    @Override
+    public void setAlarmNotification(LocalDateTime localDateTime, String title) {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+
+        long milli = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            TimeZone tz = TimeZone.getDefault();
+            ZonedDateTime zdt = localDateTime.atZone(ZoneId.of(tz.getID()));
+            milli = zdt.toInstant().toEpochMilli();
+        }
+
+        Intent intent = new Intent(getActivity(), AlarmReceiver.class);
+        intent.putExtra("EXTRA_TITLE", title);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, milli, pendingIntent);
+        }
     }
 }

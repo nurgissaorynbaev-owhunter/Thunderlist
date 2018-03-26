@@ -4,7 +4,7 @@
     android:orientation="vertical">
 
     <include layout="@layout/toolbar_main"
-        android:id="@+id/tlb_list"/>
+        android:id="@+id/tlb_task_list"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_task_list"

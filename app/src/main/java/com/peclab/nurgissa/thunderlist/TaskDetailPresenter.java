@@ -1,6 +1,7 @@
 package com.peclab.nurgissa.thunderlist;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDetailContract.Interactor.OnFinishedListener {
@@ -9,6 +10,7 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
     private Task task;
     private String[] category;
     private List<TaskCategory> categories;
+    private LocalDateTime localDateTime;
 
     public TaskDetailPresenter(TaskDetailContract.View view, TaskDetailContract.Interactor interactor) {
         this.view = view;
@@ -56,11 +58,20 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
 
     @Override
     public void saveDetail() {
+        checkForAlarmNotification();
+
         if (task.getId() == 0) {
             task.setCategoryId(Integer.parseInt(category[0]));
-            interactor.save(this, task);
+            task.setCompletedFlag(0);
+            interactor.create(this, task);
         } else {
             interactor.update(this, task);
+        }
+    }
+
+    private void checkForAlarmNotification() {
+        if (task.getReminderDate() != null && task.getReminderTime() != null) {
+            view.setAlarmNotification(localDateTime, task.getTitle());
         }
     }
 
@@ -120,5 +131,10 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter, TaskDe
     @Override
     public void setCreatedTime(String value) {
         task.setCreatedTime(value);
+    }
+
+    @Override
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
     }
 }

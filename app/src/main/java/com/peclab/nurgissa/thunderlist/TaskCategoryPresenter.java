@@ -59,7 +59,7 @@ public class TaskCategoryPresenter implements TaskCategoryContract.Presenter {
 
         String[] array = new String[]{String.valueOf(taskCategory.getId()), taskCategory.getName()};
 
-        if (taskCategory.getName().equals("Add taskCategory")) {
+        if (taskCategory.getName().equals("Add category")) {
             view.createNewItemCategory(adapterPosition);
         } else {
             view.deliverCategory(array);

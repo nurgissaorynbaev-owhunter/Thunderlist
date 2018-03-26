@@ -12,6 +12,7 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
     private String[] category;
 
 
+
     public TaskListPresenter(TaskListContract.View view, TaskListContract.Interactor interactor) {
         this.tasks = new ArrayList<>();
         this.view = view;
@@ -21,27 +22,34 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
     @Override
     public void initializeListByCategory(String[] category) {
         this.category = category;
-        interactor.getAllByCategoryId(Integer.parseInt(category[0]), this);
-    }
 
-    private void getAll() {
-        List<Task> list = interactor.getAll();
-        tasks.addAll(list);
+        if (category[1].equals("Completed")) {
+            tasks = interactor.getAllCompleted();
+            updateTaskList();
+
+        } else {
+            tasks = interactor.getAllByCategoryId(Integer.parseInt(category[0]), this);
+            updateTaskList();
+        }
     }
 
     @Override
     public void bindAdapterViewToValue(TaskListContract.AdapterView adapterView, int position) {
         this.adapterView = adapterView;
 
+        if (category[1].equals("Completed")) {
+            adapterView.setCrossedItem();
+            adapterView.setChecked(true);
+        }
         adapterView.setTitle(tasks.get(position).getTitle());
-        adapterView.setChecked(false);
     }
 
     @Override
-    public void addQuickTask(int categoryId, String value) {
+    public void addQuickTask(String value) {
         Task task = new Task();
         task.setTitle(value);
-        task.setCategoryId(categoryId);
+        task.setCompletedFlag(0);
+        task.setCategoryId(Integer.parseInt(category[0]));
 
         Task result = interactor.create(task, this);
         tasks.add(0, result);
@@ -50,16 +58,41 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
     }
 
     @Override
-    public void checkStatusChanged(boolean value, int position) {
-        if (value) {
-            Task task = tasks.get(position);
-            interactor.moveToCompleteCategory(task);
-            tasks.remove(task);
+    public void checkStatusChanged(boolean isChecked, int position) {
+        Task task = tasks.get(position);
 
-            adapterView.setChecked(false);
+        if (isChecked) {
+            if (!checkForCompleted(task)) {
+                task.setCompletedFlag(1);
 
-            view.notifyDataRemovedFromTaskList(position);
+                interactor.moveTaskToCompleteCategory(task);
+                tasks.remove(task);
+
+                adapterView.setChecked(false);
+
+                view.notifyDataRemovedFromTaskList(position);
+            }
         }
+
+        if (!isChecked) {
+            if (checkForCompleted(task)) {
+                task.setCompletedFlag(0);
+
+                interactor.moveTaskToPreviousCategory(task);
+                tasks.remove(task);
+
+                adapterView.setChecked(false);
+
+                view.notifyDataRemovedFromTaskList(position);
+            }
+        }
+    }
+
+    private boolean checkForCompleted(Task task) {
+        if (task.getCompletedFlag() == 1)
+            return true;
+
+        return false;
     }
 
     @Override
@@ -69,23 +102,42 @@ public class TaskListPresenter implements TaskListContract.Presenter, TaskListCo
 
     @Override
     public void taskClicked(int position) {
-        view.deliverTaskDetailTitle(tasks.get(position).getTitle());
+        view.deliverTaskDetailTitle(tasks.get(position).getTitle(), category);
     }
 
     @Override
     public void onCreateFinished() {
     }
 
-    @Override
-    public void onGetAllByCategoryIdFinished(List<Task> tasks) {
+    private void updateTaskList() {
         view.setToolbarName(category[1]);
-
-        this.tasks = tasks;
         view.notifyListDataChanged();
     }
 
     @Override
     public String[] getCategory() {
         return category;
+    }
+
+    @Override
+    public boolean checkDefaultTaskCategory() {
+        for (int i = 0; i < 3; i++) {
+            if (Integer.parseInt(category[0]) == i)
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void changeTaskCategoryName(String value) {
+        category[1] = value;
+        view.setToolbarName(value);
+
+        interactor.updateCategoryName(category);
+    }
+
+    @Override
+    public void deleteTaskCategory() {
+        interactor.deleteCategory(category);
     }
 }

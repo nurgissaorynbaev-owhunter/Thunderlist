@@ -16,7 +16,7 @@
         <TextView
             android:layout_marginTop="30dp"
             android:layout_marginStart="50dp"
-            android:text="Task Title"
+            android:text="@string/task_title"
             android:textColor="@color/orange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -32,7 +32,7 @@
         <TextView
             android:layout_marginTop="30dp"
             android:layout_marginStart="50dp"
-            android:text="Notes"
+            android:text="@string/notes"
             android:textColor="@color/orange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -63,7 +63,7 @@
             android:id="@+id/txv_detail_category"
             android:layout_width="318dp"
             android:layout_gravity="center"
-            android:text="Category"
+            android:text="@string/category"
             android:layout_height="wrap_content"
             android:layout_marginStart="9dp"
             android:textColorHint="@color/dark_gray"
@@ -88,7 +88,7 @@
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:layout_marginStart="9dp"
-            android:hint="Set Reminder"
+            android:hint="@string/set_reminder_time"
             android:textColorHint="@color/dark_gray"
             android:textSize="17sp" />
     </LinearLayout>
@@ -111,7 +111,7 @@
             android:layout_marginStart="5dp"
             android:textColor="@color/dark_gray"
             android:layout_gravity="center"
-            android:text="Created time"
+            android:text="@string/created_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

@@ -8,6 +8,7 @@ public class Task {
     private String reminderDate;
     private String reminderTime;
     private String createdTime;
+    private int completedFlag;
     private int categoryId;
 
     public int getId() {
@@ -64,6 +65,14 @@ public class Task {
 
     public void setCreatedTime(String createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public int getCompletedFlag() {
+        return completedFlag;
+    }
+
+    public void setCompletedFlag(int completed) {
+        completedFlag = completed;
     }
 
     @Override

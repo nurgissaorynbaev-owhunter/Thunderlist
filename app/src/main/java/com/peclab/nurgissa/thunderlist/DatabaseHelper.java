@@ -30,7 +30,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "reminder_time text, " +
                 "note text, " +
                 "created_time text, " +
-                "category_id integer, foreign key(category_id) references TaskCategory(_id));");
+                "is_completed integer, " +
+                "category_id integer, constraint fk_tasks foreign key(category_id) references TaskCategory(_id) on delete cascade);");
 
         db.execSQL("Create table TaskCategory (" +
                 "_id integer primary key autoincrement, " +

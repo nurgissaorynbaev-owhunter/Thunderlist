@@ -1,6 +1,7 @@
 package com.peclab.nurgissa.thunderlist;
 
 
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,16 @@ public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRe
         @Override
         public void setChecked(boolean value) {
             chbStatus.setChecked(value);
+        }
+
+        @Override
+        public void setCrossedItem() {
+            tevTitle.setPaintFlags(tevTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
+        @Override
+        public void hideCheckbox() {
+            chbStatus.setVisibility(View.GONE);
         }
     }
 

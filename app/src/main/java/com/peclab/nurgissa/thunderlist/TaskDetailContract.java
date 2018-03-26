@@ -1,6 +1,8 @@
 package com.peclab.nurgissa.thunderlist;
 
 
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.List;
 
 public interface TaskDetailContract {
@@ -12,6 +14,7 @@ public interface TaskDetailContract {
         void initDetailNote(String note);
         void initDetailCreatedTime(String value);
         void setToolbarTitle(String value);
+        void setAlarmNotification(LocalDateTime localDateTime, String title);
     }
 
     interface Presenter {
@@ -27,6 +30,7 @@ public interface TaskDetailContract {
         String[] getAllCategoryName();
         void setSelectedCategory(String value);
         void setCreatedTime(String value);
+        void setLocalDateTime(LocalDateTime localDateTime);
     }
 
     interface Interactor {
@@ -35,7 +39,7 @@ public interface TaskDetailContract {
             void onUpdateFinished();
             void onDeleteFinished();
         }
-        void save(OnFinishedListener onFinishedListener, Task task);
+        void create(OnFinishedListener onFinishedListener, Task task);
         void update(OnFinishedListener onFinishedListener, Task task);
         Task getByTitle(String title);
         void delete(OnFinishedListener onFinishedListener, Task task);

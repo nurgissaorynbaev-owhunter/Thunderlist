@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements  TaskListFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         RecyclerView recyclerView = findViewById(R.id.nav_recycler_view);
         drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -59,14 +61,20 @@ public class MainActivity extends AppCompatActivity implements  TaskListFragment
         if (!presenter.doesCategoriesExist()) {
 
             List<TaskCategory> categories = new ArrayList<>();
-            categories.add(new TaskCategory("Inbox", R.drawable.ic_inbox_black_24dp, R.color.light_blue));
-            categories.add(new TaskCategory("Groceries", R.drawable.ic_shopping_cart_black_24dp, R.color.light_violet));
-            categories.add(new TaskCategory("Work", R.drawable.ic_work_black_24dp, R.color.dark_orange));
-            categories.add(new TaskCategory("Completed", R.drawable.ic_done_all_black_24dp, R.color.dark_green));
-            categories.add(new TaskCategory("Add category", R.drawable.ic_add_white_24dp, R.color.light_gray));
+            categories.add(new TaskCategory(getResources().getString(R.string.category_inbox), R.drawable.ic_inbox_black_24dp, R.color.light_blue));
+            categories.add(new TaskCategory(getResources().getString(R.string.category_groceries), R.drawable.ic_shopping_cart_black_24dp, R.color.light_violet));
+            categories.add(new TaskCategory(getResources().getString(R.string.category_work), R.drawable.ic_work_black_24dp, R.color.dark_orange));
+            categories.add(new TaskCategory(getResources().getString(R.string.category_completed), R.drawable.ic_done_all_black_24dp, R.color.dark_green));
+            categories.add(new TaskCategory(getResources().getString(R.string.category_add), R.drawable.ic_add_white_24dp, R.color.light_gray));
 
             presenter.initDefaultCategories(categories);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        return false;
     }
 
     @Override
@@ -80,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements  TaskListFragment
     }
 
     @Override
-    public void onItemClick(String value, String[] category) {
+    public void onItemTaskClicked(String value, String[] category) {
         TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
 
         Bundle bundle = new Bundle();
@@ -157,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements  TaskListFragment
     }
 
     @Override
-    public void showMainList(String[] category) {
+    public void showTaskList(String[] category) {
         TaskListFragment taskListFragment = new TaskListFragment();
 
         Bundle bundle = new Bundle();
@@ -202,15 +210,12 @@ public class MainActivity extends AppCompatActivity implements  TaskListFragment
                     presenter.doesCategoriesExist();
                 }
             }
-
             @Override
             public void onDrawerOpened(View drawerView) {
             }
-
             @Override
             public void onDrawerClosed(View drawerView) {
             }
-
             @Override
             public void onDrawerStateChanged(int newState) {
             }
