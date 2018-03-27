@@ -7,7 +7,7 @@ By clicking item, you go to detail task fragment<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37946875-b23228d8-31a9-11e8-9877-d3f1991a1c53.png" width="300" height="500"/><br><br>
 In detail fragment you can change category type<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37946926-15d7aa84-31aa-11e8-9c24-55ef614048e5.png" width="300" height="500"/><br><br>
-Set reminder time<br><br>
+Set reminder date and time<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37946990-5cfdab7a-31aa-11e8-9a7c-c0b4be15875c.png" width="300" height="500"/><br><br>
 Add additional notes<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37947027-9134bc9e-31aa-11e8-9b2c-e54dcef215b5.png" width="300" height="500"/><br><br>
