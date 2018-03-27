@@ -20,4 +20,4 @@ When you check task, task goes to completed category<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37947246-d689c7ac-31ab-11e8-8a23-b6ca5a1326e9.png" width="300" height="500"/><br><br>
 Our setted notification pops up<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37947262-f35a1828-31ab-11e8-95b1-5069a7256155.png" width="300" height="500"/><br><br>
-This project not completed yet, has some bugs, and need additional features.
+This project not completed yet, currently working on it, has some bugs, and need additional features.
