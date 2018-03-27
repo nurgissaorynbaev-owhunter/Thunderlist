@@ -11,7 +11,7 @@ Set reminder date and time<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37946990-5cfdab7a-31aa-11e8-9a7c-c0b4be15875c.png" width="300" height="500"/><br><br>
 Add additional notes<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37947027-9134bc9e-31aa-11e8-9b2c-e54dcef215b5.png" width="300" height="500"/><br><br>
-By clicking accept button on left top corner, we are saving changes to database, and move to appropriate category<br><br>
+By clicking accept button on right top corner, we are saving changes to database, and move to appropriate category<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37947060-bdd4f890-31aa-11e8-84c3-266d7323158b.png" width="300" height="500"/><br><br>
 By swiping right, or clicking burger button you can open navigarion drawer panel, add specific to you categories<br><br>
 <img src="https://user-images.githubusercontent.com/36583412/37947104-009bf19c-31ab-11e8-8ba7-2c4149cd1f34.png" width="300" height="500"/><br><br>
